@@ -1,0 +1,12 @@
+#Usual
+1 10
+#Rare
+11 20
+#Epic
+25 40
+#Legendary
+50 70
+#Mythical
+80 100
+#Sublime
+150 200

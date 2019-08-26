@@ -1,0 +1,12 @@
+#Usual
+Usual armor
+#Rare
+Rare armor
+#Epic
+Epic armor
+#Legendary
+Legendary armor
+#Mythical
+Mythical armor
+#Sublime
+Sublime armor

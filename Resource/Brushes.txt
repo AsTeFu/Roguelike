@@ -1,0 +1,10 @@
+# Wall
+@ Player
+E Enemy
+X Chest
+M Shop
+$ Coin
+* Food
++ Medkit
+> ExitNext
+< ExitBack

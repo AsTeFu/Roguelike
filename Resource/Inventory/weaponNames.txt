@@ -1,0 +1,12 @@
+#Usual
+Usual weapon
+#Rare
+Rare weapon
+#Epic
+Epic weapon
+#Legendary
+Legendary weapon
+#Mythical
+Mythical weapon
+#Sublime
+Sublime weapon
