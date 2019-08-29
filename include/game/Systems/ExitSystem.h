@@ -10,7 +10,9 @@
 class ExitSystem : public ISystem {
  private:
   RoomManager* _roomManager;
+  bool isActivate;
  protected:
+  void preUpdate(Entity *entity) override;
   void postUpdate(Entity *entity) override;
 
  public:

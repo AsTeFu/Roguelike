@@ -34,6 +34,9 @@ class WeaponComponent : public IComponent {
   explicit WeaponComponent(Weapon* weapon) {
     this->weapon = std::unique_ptr<Weapon>(weapon);
   }
+  explicit WeaponComponent(WeaponComponent* weaponComponent) {
+    weapon = std::unique_ptr<Weapon>(weaponComponent->weapon.get());
+  }
   WeaponComponent(const WeaponComponent& weaponComponent) {
     weapon = std::unique_ptr<Weapon>(weaponComponent.weapon.get());
   }

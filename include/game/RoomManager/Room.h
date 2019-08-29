@@ -33,8 +33,8 @@ class Room {
   static int countRoom;
   Room(int width, int height, SceneManager* sceneManager, RoomManager* roomManager);
 
-  PlayerDTO getPlayerDTO();
-  void setPlayerDTO(const PlayerDTO& dto);
+  // PlayerDTO getPlayerDTO();
+  // void setPlayerDTO(const PlayerDTO& dto);
   Engine& getEngine();
   int getID();
 
@@ -43,8 +43,8 @@ class Room {
 
   void activateSystem();
 
-  void addSpecial(const SpecialDTO& specialDto);
-  void addName(const string& name);
+  // void addSpecial(const SpecialDTO& specialDto);
+  // void addName(const string& name);
 };
 
 #endif  // INCLUDE_GAME_ROOMMANAGER_ROOM_H_

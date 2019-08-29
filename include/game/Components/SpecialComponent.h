@@ -26,6 +26,10 @@ class SpecialComponent : public IComponent {
   int getValue(StatSpecial stat) const {
     return special.getValue(stat) + addictiveSpecial.getValue(stat);
   }
+  void setSpecials(SpecialComponent* specialComponent) {
+    special = specialComponent->special;
+    addictiveSpecial = specialComponent->addictiveSpecial;
+  }
 };
 
 #endif  // INCLUDE_GAME_COMPONENTS_SPECIALCOMPONENT_H_

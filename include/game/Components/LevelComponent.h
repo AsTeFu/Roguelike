@@ -17,6 +17,13 @@ class LevelComponent : public IComponent {
   double bonus{};
   explicit LevelComponent(int startMaxExperience)
       : currentLevel(1), currentExperience(0), maxExperience(startMaxExperience), upgrade(1.2) {}
+  LevelComponent() : LevelComponent(100) {}
+  LevelComponent(const LevelComponent& levelComponent)
+      : currentLevel(levelComponent.currentLevel),
+        currentExperience(levelComponent.currentExperience),
+        maxExperience(levelComponent.maxExperience),
+        upgrade(levelComponent.upgrade),
+        bonus(levelComponent.bonus) {}
 
   bool addExperience(int experience) {
     currentExperience += static_cast<int>(experience * (bonus + 100) / 100);
@@ -33,6 +40,13 @@ class LevelComponent : public IComponent {
     }
 
     return false;
+  }
+  void setExperience(LevelComponent* levelComponent) {
+    currentLevel = levelComponent->currentLevel;
+    currentExperience = levelComponent->currentExperience;
+    maxExperience = levelComponent->maxExperience;
+    upgrade = levelComponent->upgrade;
+    bonus = levelComponent->bonus;
   }
 };
 

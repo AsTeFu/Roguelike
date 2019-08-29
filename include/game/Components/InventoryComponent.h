@@ -51,6 +51,12 @@ class InventoryComponent : public IComponent {
   void deleteItem(int i) {
     items.erase(items.begin() + i);
   }
+  void setInventory(InventoryComponent* inventoryComponent) {
+    for (const auto& item : inventoryComponent->items) {
+      if (item->itemType == ArmorType) addItem<Armor>(dynamic_cast<Armor*>(item.get()));
+      if (item->itemType == WeaponType) addItem<Weapon>(dynamic_cast<Weapon*>(item.get()));
+    }
+  }
 };
 
 #endif  // INCLUDE_GAME_COMPONENTS_INVENTORYCOMPONENT_H_

@@ -8,7 +8,7 @@
 void GameWindowsManager::update(RoomManager *roomManager) const {
   _gameWindow.render(roomManager);
   _logWindow.render();
-  _invWindow.render(roomManager->getPlayerInfo());
+  _invWindow.render(roomManager->getCurrentPlayer());
 }
 
 GameWindowsManager::GameWindowsManager(int blockSizeX, int blockSizeY)

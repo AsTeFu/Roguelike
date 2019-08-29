@@ -38,7 +38,7 @@ class RoomManager {
   explicit RoomManager(SceneManager* sceneManager);
   void update();
   void start();
-  PlayerDTO getPlayerInfo() const;
+  // PlayerDTO getPlayerInfo() const;
   // void switchRoom(int id);
   void nextRoom();
   int createRoom();

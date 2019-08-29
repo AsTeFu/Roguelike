@@ -128,6 +128,13 @@ class ArmorComponent : public IComponent {
     }
     return protect;
   }
+  int getDodge() const {
+    int protect = 0;
+    for (const auto& equipment : equipments) {
+      protect += equipment.second->dodge;
+    }
+    return protect;
+  }
 
   std::vector<Armor*> getEquipments() {
     std::vector<Armor*> armors;
@@ -135,6 +142,11 @@ class ArmorComponent : public IComponent {
       armors.push_back(armor.second.get());
     }
     return armors;
+  }
+  void setEquipments(ArmorComponent* armorEquipments) {
+    for (const auto& equipment : armorEquipments->equipments) {
+      *equipments[equipment.first] = *equipment.second.get();
+    }
   }
 };
 

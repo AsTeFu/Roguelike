@@ -65,13 +65,12 @@ Room* RoomBuilder::build(StructureComponent* const structure, SceneManager* scen
     }
   }
 
-  room->activateSystem();
   return room;
 }
 void RoomBuilder::transferPlayer(Entity* player, Room* currentRoom) const {
-  auto playerDTO = currentRoom->getEngine().getEntityManager()->getByTag("player")[0];
+  // auto playerDTO = currentRoom->getEngine().getEntityManager()->getByTag("player")[0];
 
-  Entity::copyEntity(playerDTO, player);
+  // Entity::copyEntity(playerDTO, player);
 
   // player->addComponent<NameComponent>(playerDTO->getComponent<NameComponent>()->name);
   // player->addComponent<SpecialComponent>(playerDTO->getComponent<SpecialComponent>()->special);

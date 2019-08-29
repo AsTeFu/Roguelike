@@ -2,17 +2,6 @@
 // Created by AsTeFu on 24.07.2019.
 //
 
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/ArmorComponent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/NameComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/StepsComponent.h>
-#include <game/Components/WalletComponent.h>
-#include <game/Components/WeaponComponent.h>
 #include <game/RoomManager/Builders/RoomBuilder.h>
 #include <game/RoomManager/Room.h>
 #include <game/Systems/AIMovementSystem.h>
@@ -40,9 +29,6 @@
 #include <game/Systems/StarvationSystem.h>
 #include <game/Systems/StepsSystem.h>
 #include <game/Systems/WallRenderSystem.h>
-#include <game/Utility/DTO/SpecialDTO.h>
-#include <memory>
-#include <string>
 #include "game/RoomManager/RoomManager.h"
 
 int Room::countRoom = 0;
@@ -89,6 +75,7 @@ void Room::activateSystem() {
   _engine.getSystemManager()->addSystem<FindEventSystem>();
   _engine.getSystemManager()->addSystem<ExitSystem>(_roomManager);
 }
+/*
 PlayerDTO Room::getPlayerDTO() {
   auto player = _engine.getEntityManager()->getByTag("player")[0];
   return {player->getComponent<NameComponent>()->name,
@@ -103,6 +90,7 @@ PlayerDTO Room::getPlayerDTO() {
           player->getComponent<LevelComponent>(),
           player->getComponent<AbilitiesComponent>()};
 }
+
 void Room::addSpecial(const SpecialDTO& specialDto) {
   auto player = _engine.getEntityManager()->getByTag("player")[0];
   player->addComponent<SpecialComponent>(specialDto.special);
@@ -121,54 +109,57 @@ void Room::addSpecial(const SpecialDTO& specialDto) {
   // player->getComponent<InventoryComponent>()->maxItems = special->getValue(STRENGTH) / 2;
   // }
 }
+ */
+/*
 void Room::addName(const string& name) {
   _engine.getEntityManager()->getByTag("player")[0]->addComponent<NameComponent>(name);
-}
+} */
 Engine& Room::getEngine() {
   return _engine;
 }
+/*
 void Room::setPlayerDTO(const PlayerDTO& dto) {
-  /*
-  auto player = _engine.getEntityManager()->getByTag("player")[0];
-  player->addComponent<NameComponent>(dto.name);
-  player->getComponent<WalletComponent>()->cash = dto.cash;
-  player->getComponent<StarvationComponent>()->currentFood = dto.food;
-  player->getComponent<HealthComponent>()->health = dto.health;
-  player->getComponent<StepsComponent>()->currentSteps = dto.steps;
-  player->getComponent<WeaponComponent>()->weapon = std::make_unique<Weapon>(*dto.weapon->weapon);
-  for (auto& equipment : player->getComponent<ArmorComponent>()->equipments) {
-    equipment.second = std::make_unique<Armor>(*dto.armor->equipments.at(equipment.first));
-  }
-  for (auto& item : dto.inventory->items) {
-    if (item->itemType == WeaponType)
-      player->getComponent<InventoryComponent>()->addItem<Weapon>(dynamic_cast<Weapon*>(item.get()));
-    if (item->itemType == ArmorType)
-      player->getComponent<InventoryComponent>()->addItem<Armor>(dynamic_cast<Armor*>(item.get()));
-  }
-  player->addComponent<SpecialComponent>(dto.special->special);
 
-  player->getComponent<SpecialComponent>()->addictiveSpecial.clear();
-  for (const auto& armor : player->getComponent<ArmorComponent>()->equipments) {
-    for (const auto& effect : armor.second->effects) {
-      for (int i = 0; i < effect.second; ++i) {
-        player->getComponent<SpecialComponent>()->addictiveSpecial.addPoint(effect.first);
-      }
+auto player = _engine.getEntityManager()->getByTag("player")[0];
+player->addComponent<NameComponent>(dto.name);
+player->getComponent<WalletComponent>()->cash = dto.cash;
+player->getComponent<StarvationComponent>()->currentFood = dto.food;
+player->getComponent<HealthComponent>()->health = dto.health;
+player->getComponent<StepsComponent>()->currentSteps = dto.steps;
+player->getComponent<WeaponComponent>()->weapon = std::make_unique<Weapon>(*dto.weapon->weapon);
+for (auto& equipment : player->getComponent<ArmorComponent>()->equipments) {
+  equipment.second = std::make_unique<Armor>(*dto.armor->equipments.at(equipment.first));
+}
+for (auto& item : dto.inventory->items) {
+  if (item->itemType == WeaponType)
+    player->getComponent<InventoryComponent>()->addItem<Weapon>(dynamic_cast<Weapon*>(item.get()));
+  if (item->itemType == ArmorType)
+    player->getComponent<InventoryComponent>()->addItem<Armor>(dynamic_cast<Armor*>(item.get()));
+}
+player->addComponent<SpecialComponent>(dto.special->special);
+
+player->getComponent<SpecialComponent>()->addictiveSpecial.clear();
+for (const auto& armor : player->getComponent<ArmorComponent>()->equipments) {
+  for (const auto& effect : armor.second->effects) {
+    for (int i = 0; i < effect.second; ++i) {
+      player->getComponent<SpecialComponent>()->addictiveSpecial.addPoint(effect.first);
     }
   }
-
-  auto abilities = player->getComponent<AbilitiesComponent>();
-  for (const auto& ability : dto.abilities->abilities) {
-    abilities->abilities.push_back(ability);
-  }
-  abilities->available = dto.abilities->available;
-
-  player->getComponent<LevelComponent>()->currentLevel = dto.level->currentLevel;
-  player->getComponent<LevelComponent>()->maxExperience = dto.level->maxExperience;
-  player->getComponent<LevelComponent>()->currentExperience = dto.level->currentExperience;
-  player->getComponent<LevelComponent>()->upgrade = dto.level->upgrade;
-  player->getComponent<LevelComponent>()->bonus = dto.level->bonus;
-  */
 }
+
+auto abilities = player->getComponent<AbilitiesComponent>();
+for (const auto& ability : dto.abilities->abilities) {
+  abilities->abilities.push_back(ability);
+}
+abilities->available = dto.abilities->available;
+
+player->getComponent<LevelComponent>()->currentLevel = dto.level->currentLevel;
+player->getComponent<LevelComponent>()->maxExperience = dto.level->maxExperience;
+player->getComponent<LevelComponent>()->currentExperience = dto.level->currentExperience;
+player->getComponent<LevelComponent>()->upgrade = dto.level->upgrade;
+player->getComponent<LevelComponent>()->bonus = dto.level->bonus;
+
+} */
 int Room::getID() {
   return id;
 }

@@ -6,6 +6,7 @@
 #define INCLUDE_GAME_SYSTEMS_CASHTRIGGERSYSTEM_H_
 
 #include <game/Components/CoinItemComponent.h>
+#include <game/Components/WalletComponent.h>
 #include <game/Logs/GameLogger.h>
 #include <algorithm>
 #include "ecs/EntityManager.h"

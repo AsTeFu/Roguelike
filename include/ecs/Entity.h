@@ -46,11 +46,9 @@ class Entity {
   void removeComponent() {
     _components.erase(typeid(Component));
   }
-
   static Entity* copyEntity(Entity* const from, Entity* to) {
     for (auto& component : from->_components) {
-      to->_components[component.first] = std::move(component.second);
-      // to->_components[component.first] = std::unique_ptr<IComponent>(component.second.get());
+      to->_components[component.first] = std::unique_ptr<IComponent>(component.second.get());
     }
     return to;
   }

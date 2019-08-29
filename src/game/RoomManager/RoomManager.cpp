@@ -3,6 +3,7 @@
 //
 
 #include "game/RoomManager/RoomManager.h"
+#include <game/ECSUtility.h>
 #include <game/Scenes/BackpackScene.h>
 #include <game/Utility/DTO/SpecialDTO.h>
 #include <game/Utility/Random.h>
@@ -17,9 +18,6 @@ RoomManager::RoomManager(SceneManager* sceneManager) : sceneManager(sceneManager
 
 void RoomManager::update() {
   _currentRoom->update();
-}
-PlayerDTO RoomManager::getPlayerInfo() const {
-  return _currentRoom->getPlayerDTO();
 }
 
 Room* RoomManager::getCurrentRoom() {
@@ -51,16 +49,24 @@ int RoomManager::createRoom() {
   return Room::countRoom;
 }
 void RoomManager::nextRoom() {
+  auto oldPlayer = getCurrentPlayer();
   if (_currentID == _rooms.size()) {
     createRoom();
     _currentID++;
+    ECSUtility::copyPlayer(oldPlayer, getCurrentPlayer());
   } else {
     _currentRoom = _rooms[++_currentID].get();
+    ECSUtility::transferPlayer(oldPlayer, getCurrentPlayer());
   }
+
+  std::cout << "Current room: " << _currentID << std::endl;
 }
 void RoomManager::previousRoom() {
   if (_currentID > 1) {
+    auto oldPlayer = getCurrentPlayer();
     _currentRoom = _rooms[--_currentID].get();
+    ECSUtility::transferPlayer(oldPlayer, getCurrentPlayer());
+    std::cout << "Current room: " << _currentID << std::endl;
   }
 }
 Entity* RoomManager::getCurrentPlayer() const {
@@ -75,5 +81,6 @@ void RoomManager::start() {
     // _rooms[Room::countRoom] = unique_ptr<Room>(_builder.build(_roomsPatterns[0].get(), sceneManager, this));
     // _currentRoom = _rooms[Room::countRoom].get();
     createRoom();
+    _currentRoom->activateSystem();
   }
 }
