@@ -3,21 +3,17 @@
 //
 
 #include "game/Systems/AttackSystem.h"
-#include <BearLibTerminal.h>
+#include <Utilities/Random.h>
 #include <game/Components/AIController.h>
-#include <game/Components/AbilitiesComponent.h>
 #include <game/Components/AttackComponent.h>
-#include <game/Components/DamageComponent.h>
-#include <game/Components/DamageEvent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/PlayerComponent.h>
-#include <game/Components/ProtectComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
 #include <game/Logs/GameLogger.h>
 #include <game/Utility/Input.h>
-#include <game/Utility/Random.h>
 #include "ecs/EntityManager.h"
 #include "ecs/SystemManager.h"
 
@@ -38,7 +34,7 @@ void AttackSystem::preUpdate(Entity* entity) {
   if ((playerPos->position - entityPos->position).len2() <= 2) {
     if (entityAttack->lastPosition == playerPos->position) attack(entity, player);
     entityAttack->lastPosition.set(playerPos->position);
-    if (Input::isPressed(TK_SPACE)) attack(player, entity);
+    if (Input::getKey(KeyCode::Space)) attack(player, entity);
   }
 }
 

@@ -5,12 +5,11 @@
 #ifndef INCLUDE_GAME_SCENES_ENDGAMESCENE_H_
 #define INCLUDE_GAME_SCENES_ENDGAMESCENE_H_
 
-#include <BearLibTerminal.h>
 #include <string>
 #include <utility>
 #include <vector>
 #include "game/Scenes/SceneManager.h"
-#include "game/Utility/ConfigTerminal.h"
+#include "game/Utility/Config.h"
 #include "game/Utility/DTO/PlayerDTO.h"
 #include "game/Windows/WindowConfig.h"
 

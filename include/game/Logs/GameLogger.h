@@ -5,7 +5,6 @@
 #ifndef INCLUDE_GAME_LOGS_GAMELOGGER_H_
 #define INCLUDE_GAME_LOGS_GAMELOGGER_H_
 
-#include <BearLibTerminal.h>
 #include <deque>
 #include <string>
 

@@ -3,18 +3,20 @@
 //
 
 #include "game/Systems/ChestOpenSystem.h"
-#include <BearLibTerminal.h>
-#include <game/Components/ChestComponent.h>
-#include <game/Components/Collider.h>
-#include <game/Components/Graphic.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/Trigger.h>
+#include <game/Components/BaseComponent/Collider.h>
+#include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/BaseComponent/Trigger.h>
+#include <game/Components/EnvironmentComponents/ChestComponent.h>
+#include <game/Components/ItemComponents/InventoryComponent.h>
+#include <game/Items/CoinItem.h>
+#include <game/Items/FoodItem.h>
 #include <game/Items/GeneratorInventoryItem.h>
+#include <game/Items/MedkitItem.h>
 #include <game/RoomManager/Room.h>
 #include <game/Utility/DTO/ChestDTO.h>
 #include <game/Utility/Input.h>
-#include <game/Utility/Random.h>
+#include <utilities/Random.h>
 #include <algorithm>
 #include "ecs/EntityManager.h"
 #include "ecs/SystemManager.h"
@@ -58,20 +60,16 @@ void ChestOpenSystem::update(Entity* entity) {
     auto emptyChest = getEntityManager()->createEntity();
     emptyChest->addComponent<Transform>(entity->getComponent<Transform>()->position);
     emptyChest->addComponent<Graphic>(
-        Display(entity->getComponent<Graphic>()->display.graphic, ConfigTerminal::disableColor));
+        Display(entity->getComponent<Graphic>()->display.graphic, Config::getInstance().disableColor));
     getSystemManager()->addEntity(emptyChest);
 
     getSystemManager()->deleteEntity(entity->getID());
     getEntityManager()->deleteEntity(entity->getID());
   }
 
-  if (Input::isPressed(TK_ENTER) &&
+  if (Input::getKey(KeyCode::Enter) &&
       player->getComponent<Transform>()->position == entity->getComponent<Transform>()->position) {
-    getSceneManager()->getContext()->addObject<ChestDTO>(
-        chest, player->getComponent<WeaponComponent>(), player->getComponent<ArmorComponent>(),
-        player->getComponent<WalletComponent>(), player->getComponent<StarvationComponent>(),
-        player->getComponent<HealthComponent>(), player->getComponent<InventoryComponent>(),
-        player->getComponent<SpecialComponent>());
+    getSceneManager()->getContext()->addObject<ChestDTO>(player, chest);
 
     getSceneManager()->switchScene("Chest");
   }

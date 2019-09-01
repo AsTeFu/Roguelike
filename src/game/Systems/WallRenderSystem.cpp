@@ -3,12 +3,14 @@
 //
 
 #include "game/Systems/WallRenderSystem.h"
-#include <game/Components/Collider.h>
-#include <game/Components/ExitComponent.h>
-#include <game/Components/Graphic.h>
-#include <game/Components/Transform.h>
-#include <game/Components/WallComponent.h>
-#include <game/Utility/ConfigTerminal.h>
+#include <BearLibTerminal.h>
+#include <game/Components/BaseComponent/Collider.h>
+#include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/EnvironmentComponents/ExitComponent.h>
+#include <game/Components/EnvironmentComponents/WallComponent.h>
+#include <game/Utility/Config.h>
+#include <utilities/Terminal.h>
 
 bool WallRenderSystem::filter(Entity* entity) const {
   return ((entity->hasComponent<Collider>() && entity->hasComponent<WallComponent>()) ||
@@ -21,18 +23,18 @@ void WallRenderSystem::postUpdate(Entity* entity) {
 
   if (isVisibleWall(positionWall->position.getX() + graphic->offset.getX(),
                     positionWall->position.getY() + graphic->offset.getY())) {
-    terminal_color(graphic->display.color);
+    Terminal::setColor(graphic->display.color);
     graphic->visible = true;
   } else {
     if (graphic->visible) {
-      terminal_color(ConfigTerminal::disableColor);
+      Terminal::setColor(Config::getInstance().disableColor);
     } else {
       return;
     }
   }
 
-  terminal_put(positionWall->position.getX() + graphic->offset.getX(),
-               positionWall->position.getY() + graphic->offset.getY(), graphic->display.graphic);
+  Terminal::put(positionWall->position.getX() + graphic->offset.getX(),
+                positionWall->position.getY() + graphic->offset.getY(), graphic->display.graphic);
 }
 
 bool WallRenderSystem::pickDot(int x, int y) const {

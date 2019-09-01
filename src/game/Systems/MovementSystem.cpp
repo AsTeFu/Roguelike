@@ -3,13 +3,13 @@
 //
 
 #include "game/Systems/MovementSystem.h"
+#include <game/Components/EnvironmentComponents/WallComponent.h>
 #include <game/Components/MovementEvent.h>
 #include <game/Components/PositionsComponent.h>
-#include <game/Components/WallComponent.h>
 #include "ecs/EntityManager.h"
-#include "game/Components/Collider.h"
-#include "game/Components/Movement.h"
-#include "game/Components/Transform.h"
+#include "game/Components/BaseComponent/Collider.h"
+#include "game/Components/BaseComponent/Movement.h"
+#include "game/Components/BaseComponent/Transform.h"
 
 void MovementSystem::preUpdate(Entity* entity) {
   auto transform = entity->getComponent<Transform>();

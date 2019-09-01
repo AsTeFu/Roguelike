@@ -3,12 +3,12 @@
 //
 
 #include "game/Systems/MedkitTriggerSystem.h"
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/HealthItemComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/Trigger.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/BaseComponent/Trigger.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/HealthItemComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
 #include <game/Logs/GameLogger.h>
 #include <algorithm>
 #include "ecs/EntityManager.h"

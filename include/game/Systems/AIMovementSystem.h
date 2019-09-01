@@ -5,7 +5,7 @@
 #ifndef INCLUDE_GAME_SYSTEMS_AIMOVEMENTSYSTEM_H_
 #define INCLUDE_GAME_SYSTEMS_AIMOVEMENTSYSTEM_H_
 
-#include <game/Utility/Vector2.h>
+#include <Utilities/Vector2.h>
 #include "ecs/ISystem.h"
 
 class AIMovementSystem : public ISystem {

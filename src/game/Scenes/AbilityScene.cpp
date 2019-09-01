@@ -4,7 +4,7 @@
 
 #include "game/Scenes/AbilityScene.h"
 #include <BearLibTerminal.h>
-#include <game/Utility/ConfigTerminal.h>
+#include <game/Utility/Config.h>
 #include <game/Utility/Input.h>
 #include <algorithm>
 #include <fstream>
@@ -53,42 +53,42 @@ void AbilityScene::start(SceneManager *sceneManager) {
 }
 
 void AbilityScene::update(SceneManager *sceneManager) {
-  if (Input::isPressed(TK_ESCAPE)) {
+  if (Input::getKey(KeyCode::Escape)) {
     sceneManager->switchScene("Game");
   }
 
-  if (Input::isPressed(TK_LEFT)) {
+  if (Input::getKey(KeyCode::LeftArrow)) {
     _side = LeftSide;
     _currentItem = 0;
   }
-  if (Input::isPressed(TK_RIGHT)) {
+  if (Input::getKey(KeyCode::RightArrow)) {
     _side = RightSide;
     _currentItem = 0;
   }
 
   if (_side == LeftSide) {
-    if (Input::isPressed(TK_UP)) {
+    if (Input::getKey(KeyCode::UpArrow)) {
       if (_currentItem > 0) _currentItem--;
     }
-    if (Input::isPressed(TK_DOWN)) {
-      if (_currentItem + 1 < static_cast<int>(ConfigTerminal::statsSpecial.size())) _currentItem++;
+    if (Input::getKey(KeyCode::DownArrow)) {
+      if (_currentItem + 1 < static_cast<int>(Config::getInstance().statsSpecial.size())) _currentItem++;
     }
-    if (Input::isPressed(TK_ENTER) || Input::isPressed(TK_SPACE)) {
-      if (enhanceDto->specialComponent->special.getValue(ConfigTerminal::statsSpecial[_currentItem]) <
-          ConfigTerminal::maxPointsSpecial) {
-        enhanceDto->specialComponent->special.addPoint(ConfigTerminal::statsSpecial[_currentItem]);
+    if (Input::getKey(KeyCode::Enter) || Input::getKey(KeyCode::Space)) {
+      if (enhanceDto->specialComponent->special.getValue(Config::getInstance().statsSpecial[_currentItem]) <
+          Config::getInstance().maxPointsSpecial) {
+        enhanceDto->specialComponent->special.addPoint(Config::getInstance().statsSpecial[_currentItem]);
       }
     }
   }
 
   if (_side == RightSide) {
-    if (Input::isPressed(TK_UP)) {
+    if (Input::getKey(KeyCode::UpArrow)) {
       if (_currentItem > 0) _currentItem--;
     }
-    if (Input::isPressed(TK_DOWN)) {
+    if (Input::getKey(KeyCode::DownArrow)) {
       if (_currentItem + 1 < static_cast<int>(_abilities.size())) _currentItem++;
     }
-    if (Input::isPressed(TK_ENTER) || Input::isPressed(TK_SPACE)) {
+    if (Input::getKey(KeyCode::Enter) || Input::getKey(KeyCode::Space)) {
       if (enhanceDto->abilitiesComponent->available &&
           !std::count(enhanceDto->abilitiesComponent->abilities.begin(),
                       enhanceDto->abilitiesComponent->abilities.end(), _abilities[_currentItem])) {
@@ -103,8 +103,8 @@ void AbilityScene::update(SceneManager *sceneManager) {
         else if (_abilities[_currentItem].name == "Прилежный ученик")
           enhanceDto->levelComponent->bonus = 25;
         else if (_abilities[_currentItem].name == "Здесь и сейчас") {
-          enhanceDto->levelComponent->addExperience(enhanceDto->levelComponent->maxExperience -
-                                                    enhanceDto->levelComponent->currentExperience + 1);
+          // TODO(AsTeFu): тут уровень поломан
+          enhanceDto->levelComponent->addExperience();
           enhanceDto->specialComponent->special.addAvailablePoint();
           enhanceDto->abilitiesComponent->available++;
         }
@@ -123,24 +123,24 @@ void AbilityScene::leftRender() {
   int topIndent = 2;
   int leftIndent = 10;
   Vector2 position(0, 0);
-  Vector2 size(ConfigTerminal::sizeTerminal.getX() - leftIndent * 2, 20);
+  Vector2 size(Config::getInstance().sizeTerminal.getX() - leftIndent * 2, 20);
 
   int offsetX = leftIndent + position.getX();
   int offsetY = topIndent + position.getY();
 
-  drawHeader({offsetX, offsetY}, {ConfigTerminal::sizeTerminal.getX() - leftIndent * 2, 4}, "Enhance");
+  // drawHeader({offsetX, offsetY}, {Config::getInstance().sizeTerminal.getX() - leftIndent * 2, 4}, "Enhance");
 
   offsetY += 5;
 
-  horizontalBorder({offsetX, offsetY}, size);
-  verticalBorder({offsetX, offsetY}, size);
+  // horizontalBorder({offsetX, offsetY}, size);
+  // verticalBorder({offsetX, offsetY}, size);
 
   int rightSideOffsetX = (size.getX() - leftIndent) / 2;
-  verticalLine({rightSideOffsetX, offsetY}, {1, size.getY()});
+  // verticalLine({rightSideOffsetX, offsetY}, {1, size.getY()});
 
   size.setY(15);
-  horizontalBorder({offsetX, offsetY + 20}, size);
-  verticalBorder({offsetX, offsetY + 20}, size);
+  // horizontalBorder({offsetX, offsetY + 20}, size);
+  // verticalBorder({offsetX, offsetY + 20}, size);
 
   offsetX += leftIndent / 2 + 4;
   offsetY += 2;
@@ -154,7 +154,7 @@ void AbilityScene::leftRender() {
   offsetY += 2;
 
   int i = 0;
-  for (const auto &stat : ConfigTerminal::statsSpecial) {
+  for (const auto &stat : Config::getInstance().statsSpecial) {
     if (_currentItem == i) {
       terminal_print(offsetX - 3, offsetY, "=>");
     }
@@ -172,7 +172,7 @@ void AbilityScene::leftRender() {
     for (const auto &symbol : stat) tmp.push_back(toupper(symbol));
 
     if (enhanceDto->specialComponent->special.countPoints() &&
-        enhanceDto->specialComponent->special.getValue(stat) < ConfigTerminal::maxPointsSpecial)
+        enhanceDto->specialComponent->special.getValue(stat) < Config::getInstance().maxPointsSpecial)
       terminal_printf(offsetX, offsetY, "%s - %d [color=white][[+]]", tmp.c_str(),
                       enhanceDto->specialComponent->special.getValue(stat));
     else
@@ -231,24 +231,24 @@ void AbilityScene::rightRender() {
   int topIndent = 2;
   int leftIndent = 10;
   Vector2 position(0, 0);
-  Vector2 size(ConfigTerminal::sizeTerminal.getX() - leftIndent * 2, 20);
+  Vector2 size(Config::getInstance().sizeTerminal.getX() - leftIndent * 2, 20);
 
   int offsetX = leftIndent + position.getX();
   int offsetY = topIndent + position.getY();
 
-  drawHeader({offsetX, offsetY}, {ConfigTerminal::sizeTerminal.getX() - leftIndent * 2, 4}, "Enhance");
+  // drawHeader({offsetX, offsetY}, {Config::getInstance().sizeTerminal.getX() - leftIndent * 2, 4}, "Enhance");
 
   offsetY += 5;
 
-  horizontalBorder({offsetX, offsetY}, size);
-  verticalBorder({offsetX, offsetY}, size);
+  // horizontalBorder({offsetX, offsetY}, size);
+  // verticalBorder({offsetX, offsetY}, size);
 
   int rightSideOffsetX = (size.getX() - leftIndent) / 2;
-  verticalLine({rightSideOffsetX, offsetY}, {1, size.getY()});
+  // verticalLine({rightSideOffsetX, offsetY}, {1, size.getY()});
 
   size.setY(15);
-  horizontalBorder({offsetX, offsetY + 20}, size);
-  verticalBorder({offsetX, offsetY + 20}, size);
+  // horizontalBorder({offsetX, offsetY + 20}, size);
+  // verticalBorder({offsetX, offsetY + 20}, size);
 
   offsetX += leftIndent / 2 + 4;
   offsetY += 2;
@@ -262,7 +262,7 @@ void AbilityScene::rightRender() {
 
   offsetY += 2;
 
-  for (const auto &stat : ConfigTerminal::statsSpecial) {
+  for (const auto &stat : Config::getInstance().statsSpecial) {
     terminal_color("gray");
 
     string tmp;

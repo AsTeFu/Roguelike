@@ -3,6 +3,7 @@
 //
 
 #include "game/Logs/GameLogger.h"
+#include <utilities/Terminal.h>
 #include <string>
 
 void GameLogger::add(const std::string& log) {
@@ -15,7 +16,7 @@ void GameLogger::clear() {
 }
 void GameLogger::render(int posY) const {
   for (const std::string& log : _lastLogs) {
-    terminal_printf(2, posY++, log.c_str());
+    Terminal::print(2, posY++, log);
   }
 }
 GameLogger& GameLogger::getInstance() {

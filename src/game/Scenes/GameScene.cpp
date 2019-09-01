@@ -7,7 +7,7 @@
 #include <game/Utility/Input.h>
 
 void GameScene::update(SceneManager* sceneManager) {
-  // if (Input::isPressed(TK_ESCAPE)) terminal_close();
+  // if (Input::getKey(TK_ESCAPE)) terminal_close();
 
   _windowsManager.update(&roomManager);
 }
@@ -22,18 +22,18 @@ void GameScene::start(SceneManager* sceneManager) {
   _windowsManager.update(&roomManager);
 }
 void GameScene::end(SceneManager* sceneManager) {
-  // _game.end(sceneManager);
+  // game.end(sceneManager);
 }
 void GameScene::render() {
   // _windowsManager.update();
 }
 void GameScene::newGame() {
-  // _game.newGame();
+  // game.newGame();
 }
 
 void GameScene::continueGame() {
-  // _game.continueGame();
+  // game.continueGame();
 }
 void GameScene::setSpicial(const Special& special) {
-  // _game.setSpecial(special);
+  // game.setSpecial(special);
 }

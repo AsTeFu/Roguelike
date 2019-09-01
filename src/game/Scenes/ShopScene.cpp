@@ -3,6 +3,8 @@
 //
 
 #include "game/Scenes/ShopScene.h"
+#include <game/Items/FoodItem.h>
+#include <game/Items/MedkitItem.h>
 #include <game/Logs/GameLogger.h>
 #include <game/Utility/DTO/ShopDTO.h>
 #include <game/Utility/Input.h>
@@ -13,19 +15,18 @@ void ShopScene::start(SceneManager* sceneManager) {
   if (!gameDTO->shopComponent->items.empty() || !gameDTO->inventoryComponent->items.empty()) _currentItem = 0;
 }
 void ShopScene::update(SceneManager* sceneManager) {
-  if (Input::isPressed(TK_ESCAPE)) {
-    terminal_clear_area(ConfigTerminal::positionChestScene.getX(), ConfigTerminal::positionChestScene.getY(),
-                        ConfigTerminal::sizeChestScene.getX(), ConfigTerminal::sizeChestScene.getY());
+  if (Input::getKey(KeyCode::Escape)) {
+    Terminal::clearArea(Config::getInstance().positionChestScene, Config::getInstance().sizeChestScene);
     sceneManager->switchScene("Game");
   }
 
   if (_currentItem == -1) return;
 
-  if (Input::isPressed(TK_UP)) increase();
-  if (Input::isPressed(TK_DOWN)) decrease();
+  if (Input::getKey(KeyCode::UpArrow)) increase();
+  if (Input::getKey(KeyCode::DownArrow)) decrease();
 
-  if (Input::isPressed(TK_SPACE)) buyItem(sceneManager);
-  if (Input::isPressed(TK_SPACE)) saleItem(sceneManager);
+  if (Input::getKey(KeyCode::Space)) buyItem(sceneManager);
+  if (Input::getKey(KeyCode::Space)) saleItem(sceneManager);
 }
 
 void ShopScene::decrease() {
@@ -90,9 +91,10 @@ void ShopScene::render() {
   // if (_currentItem == -1) return;
 
   Vector2 position(0, 0);
-  Vector2 size(ConfigTerminal::sizeTerminal.getX() * ConfigTerminal::areaX / 100,
-               ConfigTerminal::sizeTerminal.getY() * ConfigTerminal::areaY / 100);
+  Vector2 size(Config::getInstance().sizeTerminal.getX() * Config::getInstance().area.getX() / 100,
+               Config::getInstance().sizeTerminal.getY() * Config::getInstance().area.getY() / 100);
 
+  /*
   terminal_layer(0);
   terminal_clear_area(position.getX(), position.getY(), size.getX(), size.getY());
 
@@ -133,11 +135,11 @@ void ShopScene::render() {
 
   // Inventory
   offsetY += 2;
-  horizontalLine({position.getX(), offsetY}, size);
+  // horizontalLine({position.getX(), offsetY}, size);
   terminal_print(position.getX() + 4, offsetY, "Inventory");
 
-  horizontalLine(position, size);
-  verticalBorder(position, size);
+  // horizontalLine(position, size);
+  // verticalBorder(position, size);
   terminal_print(offsetX, position.getY(), "SHOP");
 
   offsetY += 2;
@@ -160,9 +162,9 @@ void ShopScene::render() {
   }
 
   // Right side
-  position = {ConfigTerminal::sizeTerminal.getX() * ConfigTerminal::areaX / 100, 0};
-  size = {ConfigTerminal::sizeTerminal.getX() * (100 - ConfigTerminal::areaX) / 100,
-          ConfigTerminal::sizeTerminal.getY()};
+  position = {Config::getInstance().sizeTerminal.getX() * Config::getInstance().area.getX() / 100, 0};
+  size = {Config::getInstance().sizeTerminal.getX() * (100 - Config::getInstance().area.getY()) / 100,
+          Config::getInstance().sizeTerminal.getY()};
 
   terminal_layer(1);
   terminal_clear_area(position.getX(), position.getY(), size.getX(), size.getY());
@@ -174,7 +176,7 @@ void ShopScene::render() {
   offsetX = position.getX() + leftIndent;
   offsetY = position.getY() + topIndent;
 
-  horizontalBorder(position, size);
+  // horizontalBorder(position, size);
 
   // Trader info
   terminal_printf(position.getX() + leftIndent, position.getY(), "TRADER");
@@ -185,7 +187,7 @@ void ShopScene::render() {
   // You
   offsetY += 3;
 
-  horizontalLine({position.getX(), offsetY}, size);
+  // horizontalLine({position.getX(), offsetY}, size);
   terminal_printf(position.getX() + leftIndent, offsetY, "YOU");
 
   offsetY += 2;
@@ -196,7 +198,7 @@ void ShopScene::render() {
   // Equipments
 
   offsetY += 1;
-  horizontalLine({position.getX(), offsetY}, size);
+  // horizontalLine({position.getX(), offsetY}, size);
   terminal_printf(position.getX() + leftIndent, offsetY, "EQUIPMENTS");
 
   offsetY += 2;
@@ -206,5 +208,5 @@ void ShopScene::render() {
     offsetY += equipment.second->printItemExtended(offsetX, offsetY) + 1;
   }
 
-  verticalBorder(position, size);
+  // verticalBorder(position, size); */
 }

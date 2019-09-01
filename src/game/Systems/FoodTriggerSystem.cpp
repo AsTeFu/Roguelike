@@ -3,9 +3,9 @@
 //
 
 #include "game/Systems/FoodTriggerSystem.h"
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/Transform.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/PlayerComponents/StarvationComponent.h>
 #include <game/Logs/GameLogger.h>
 #include "ecs/EntityManager.h"
 #include "ecs/SystemManager.h"

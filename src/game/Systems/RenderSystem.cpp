@@ -3,15 +3,16 @@
 //
 
 #include "game/Systems/RenderSystem.h"
-#include <game/Components/ExitComponent.h>
-#include <game/Components/PointComponent.h>
+#include <game/Components/EnvironmentComponents/ExitComponent.h>
+#include <game/Components/EnvironmentComponents/PointComponent.h>
+#include <game/Components/EnvironmentComponents/WallComponent.h>
 #include <game/Components/PositionsComponent.h>
-#include <game/Components/WallComponent.h>
-#include <game/Utility/ConfigTerminal.h>
-#include <game/Utility/MathUtility.h>
+#include <game/Utility/Config.h>
+#include <utilities/MathUtility.h>
+#include <utilities/Terminal.h>
 #include "ecs/EntityManager.h"
-#include "game/Components/Graphic.h"
-#include "game/Components/Transform.h"
+#include "game/Components/BaseComponent/Graphic.h"
+#include "game/Components/BaseComponent/Transform.h"
 
 void RenderSystem::postUpdate(Entity* entity) {
   auto transform = entity->getComponent<Transform>();
@@ -31,19 +32,19 @@ void RenderSystem::postUpdate(Entity* entity) {
 
   if ((playerTransform->position - transform->position).len2() < perseption * perseption &&
       brezenham(playerTransform->position, transform->position)) {
-    terminal_color(graphic->display.color);
+    Terminal::setColor(graphic->display.color);
     graphic->visible = true;
     graphic->renderPos = transform->position;
   } else {
     if (graphic->visible) {
-      terminal_color(ConfigTerminal::disableColor);
+      Terminal::setColor(Config::getInstance().disableColor);
     } else {
       return;
     }
   }
 
-  terminal_put(graphic->renderPos.getX() + graphic->offset.getX(), graphic->renderPos.getY() + graphic->offset.getY(),
-               graphic->display.graphic);
+  Terminal::put(graphic->renderPos.getX() + graphic->offset.getX(), graphic->renderPos.getY() + graphic->offset.getY(),
+                graphic->display.graphic);
   // terminal_put(transform->position.getX() + graphic->offset.getX(), transform->position.getY() +
   // graphic->offset.getY(), graphic->display.graphic);
 }

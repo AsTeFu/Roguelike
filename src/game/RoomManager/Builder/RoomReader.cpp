@@ -7,7 +7,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "game/Utility/Vector2.h"
+#include "Utilities/Vector2.h"
 
 RoomDTO RoomReader::readerRoom(const std::string& path) {
   std::map<char, std::vector<Vector2>> positions;

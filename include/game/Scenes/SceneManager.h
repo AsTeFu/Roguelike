@@ -10,23 +10,35 @@
 #include <memory>
 #include <string>
 #include <typeindex>
-#include "game/Utility/Vector2.h"
+#include "utilities/Vector2.h"
+
+#define menuScene "Menu"
+#define gameScene "Game"
+#define inputnameScene "InputName"
+#define specialScene "Special"
+#define abilityScene "Ability"
+#define chestScene "Chest"
+#define shopScene "Shop"
+#define backpackScene "Backpack"
+#define gameOverScene "GameOver"
+#define editorScene "Editor"
+#define settingScene "Setting"
 
 class Scene;
 class Context;
 
 class SceneManager {
  private:
-  Scene* _currState;
+  Scene* _currentScene;
   std::map<std::string, std::unique_ptr<Scene>> _scenes;
   Context* _context;
 
  public:
   explicit SceneManager(Context* context);
-  void update();
-  void start();
-  void end();
-  void render();
+  void update();  // Вызывается у текущей сцены пря налиции ввода
+  void start();   // Вызывается один раз при переходе на сцену
+  void end();     // Вызывается один раз при выходе со сцены
+  void render();  // Вызывается сразу после update
 
   void addScene(const std::string& nameScene, Scene* scene);
   void switchScene(const std::string& nameScene);
@@ -41,12 +53,6 @@ class Scene {
   Context* const _context;
 
  public:
-  void drawHeader(const Vector2& position, const Vector2& size, const std::string& name) const;
-  void verticalBorder(const Vector2& position, const Vector2& size) const;
-  void horizontalBorder(const Vector2& position, const Vector2& size) const;
-  void horizontalLine(const Vector2& position, const Vector2& size) const;
-  void verticalLine(const Vector2& position, const Vector2& size) const;
-
   explicit Scene(Context* const context, SceneManager* sceneManager) : _sceneManager(sceneManager), _context(context) {}
   virtual ~Scene() = default;
   virtual void update(SceneManager* sceneManager) {}

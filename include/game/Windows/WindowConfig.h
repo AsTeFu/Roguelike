@@ -5,10 +5,10 @@
 #ifndef INCLUDE_GAME_WINDOWS_WINDOWCONFIG_H_
 #define INCLUDE_GAME_WINDOWS_WINDOWCONFIG_H_
 
-#include <BearLibTerminal.h>
+#include <utilities/Color.h>
 #include <string>
 #include <utility>
-#include "game/Utility/Vector2.h"
+#include "utilities/Vector2.h"
 
 class WindowConfig {
  private:
@@ -16,12 +16,12 @@ class WindowConfig {
 
  public:
   int layer;
-  color_t color;
+  Color color;
   Vector2 size;
   Vector2 position;
   std::string name;
 
-  WindowConfig(const Vector2& size, const Vector2& position, color_t color, std::string  name)
+  WindowConfig(const Vector2& size, const Vector2& position, const Color& color, std::string  name)
       : layer(_allLayer++), color(color), size(size), position(position), name(std::move(name)) {
     // std::cout << "ConfigWindow create!" << std::endl;
   }

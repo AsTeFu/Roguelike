@@ -3,26 +3,16 @@
 //
 #include "game/Utility/Input.h"
 #include <BearLibTerminal.h>
+#include <map>
+#include <vector>
 
-Vector2 Input::axis = Vector2::ZERO;
+std::map<int, bool> Input::keys = std::map<int, bool>();
 
-void Input::updateAxis() {
-  if (isPressed(TK_LEFT))
-    axis.set(-1, 0);
-  else if (isPressed(TK_RIGHT))
-    axis.set(1, 0);
-  else if (isPressed(TK_UP))
-    axis.set(0, -1);
-  else if (isPressed(TK_DOWN))
-    axis.set(0, 1);
-  else
-    axis.set(0, 0);
+bool Input::getKey(const KeyCode& code) {
+  return terminal_peek() == code.key;
 }
-bool Input::isPressed(int button) {
-  return terminal_peek() == button;
-}
-const Vector2& Input::getAxis() {
-  return axis;
+bool Input::getKeyUp(const KeyCode& code) {
+  return terminal_peek() == (code.key | TK_KEY_RELEASED);
 }
 bool Input::isExit() {
   return false;
@@ -38,4 +28,19 @@ bool Input::hasInput() {
 }
 int Input::read() {
   return terminal_read();
+}
+bool Input::getKeyDown(const KeyCode& code) {
+  if (code.key == terminal_peek() && !keys[code.key]) {
+    keys[code.key] = true;
+    return keys[code.key];
+  }
+  return false;
+}
+void Input::updateKeys() {
+  int peek = terminal_peek();
+  for (auto& key : keys) {
+    if ((key.first | TK_KEY_RELEASED) == peek) {
+      key.second = false;
+    }
+  }
 }

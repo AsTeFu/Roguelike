@@ -3,12 +3,13 @@
 //
 
 #include "game/Systems/ExitSystem.h"
-#include <game/Components/ExitComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/Trigger.h>
+#include <utilities/Random.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/BaseComponent/Trigger.h>
+#include <game/Components/EnvironmentComponents/ExitComponent.h>
 #include <game/ECSUtility.h>
 #include <game/Utility/Input.h>
-#include <game/Utility/Random.h>
+#include <utilities/Terminal.h>
 #include <string>
 #include <vector>
 #include "game/RoomManager/RoomManager.h"
@@ -41,10 +42,10 @@ void ExitSystem::postUpdate(Entity* entity) {
 
     std::string tag = currentRoomExit->direction ? "<" : ">";
     Vector2 dir;
-    if (Input::isPressed(TK_LEFT)) dir = Vector2::LEFT;
-    if (Input::isPressed(TK_RIGHT)) dir = Vector2::RIGHT;
-    if (Input::isPressed(TK_UP)) dir = Vector2::UP;
-    if (Input::isPressed(TK_DOWN)) dir = Vector2::DOWN;
+    if (Input::getKey(KeyCode::LeftArrow)) dir = Vector2::LEFT;
+    if (Input::getKey(KeyCode::RightArrow)) dir = Vector2::RIGHT;
+    if (Input::getKey(KeyCode::UpArrow)) dir = Vector2::UP;
+    if (Input::getKey(KeyCode::DownArrow)) dir = Vector2::DOWN;
 
     Vector2 startPosition = _roomManager->getCurrentRoom()
                                 ->getEngine()
@@ -61,9 +62,10 @@ void ExitSystem::postUpdate(Entity* entity) {
         ->getByTag("camera")[0]
         ->getComponent<Transform>()
         ->position.set(transformPlayer->position);
-    terminal_clear();
+    Terminal::clear();
     // _roomManager->update();
-    _roomManager->getCurrentRoom()->activateSystem();
+    // _roomManager->getCurrentRoom()->activateSystem();
+    _roomManager->getCurrentRoom()->getEngine().getSystemManager()->setComponents();
   }
 }
 void ExitSystem::preUpdate(Entity* entity) {

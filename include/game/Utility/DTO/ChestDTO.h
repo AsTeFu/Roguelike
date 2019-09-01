@@ -5,39 +5,24 @@
 #ifndef INCLUDE_GAME_UTILITY_DTO_CHESTDTO_H_
 #define INCLUDE_GAME_UTILITY_DTO_CHESTDTO_H_
 
-#include <game/Components/ArmorComponent.h>
-#include <game/Components/ChestComponent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/WalletComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <ecs/Entity.h>
+#include <game/Components/EnvironmentComponents/ChestComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
+#include <iostream>
 #include "game/Utility/DTO/ObjectDTO.h"
 
-// TODO(AsTeFu): rename
 class ChestDTO : public ObjectDTO {
  public:
+  Entity* player;
   ChestComponent* chestComponent;
-  WeaponComponent* weaponComponent;
-  ArmorComponent* armorComponent;
-  WalletComponent* walletComponent;
-  StarvationComponent* starvationComponent;
-  HealthComponent* healthComponent;
-  InventoryComponent* inventoryComponent;
-  SpecialComponent* specialComponent;
+  ChestDTO(Entity* entity, ChestComponent* chestComponent) : player(entity), chestComponent(chestComponent) {
+    if (!player->hasComponent<PlayerComponent>()) std::cout << "ChestDTO: incorrect player" << std::endl;
+  }
 
-  ChestDTO(ChestComponent* chestComponent, WeaponComponent* weaponComponent, ArmorComponent* armorComponent,
-           WalletComponent* walletComponent, StarvationComponent* starvationComponent, HealthComponent* healthComponent,
-           InventoryComponent* inventoryComponent, SpecialComponent* specialComponent)
-      : chestComponent(chestComponent),
-        weaponComponent(weaponComponent),
-        armorComponent(armorComponent),
-        walletComponent(walletComponent),
-        starvationComponent(starvationComponent),
-        healthComponent(healthComponent),
-        inventoryComponent(inventoryComponent),
-        specialComponent(specialComponent) {}
+  template<typename Component>
+  Component* getComponent() {
+    return player->getComponent<Component>();
+  }
 };
 
 #endif  // INCLUDE_GAME_UTILITY_DTO_CHESTDTO_H_

@@ -3,40 +3,60 @@
 //
 
 #include "game/Scenes/SpecialScene.h"
+#include <game/Scenes/SceneRenderUtility.h>
 #include <game/Utility/DTO/SpecialDTO.h>
+#include <utilities/FileUtility.h>
+#include <utilities/MathUtility.h>
+#include <utilities/StringUtility.h>
 #include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include "game/Scenes/GameScene.h"
-#include "game/Utility/ConfigTerminal.h"
+#include "game/Utility/Config.h"
 #include "game/Utility/Input.h"
 
-void SpecialScene::update(SceneManager* sceneManager) {
-  inputMenu(sceneManager);
+SpecialScene::SpecialScene(Context* context, SceneManager* sceneManager)
+    : Scene(context, sceneManager),
+      _description(FileUtility::readDescription("Resource/Direction/Description.txt")),
+      _currentPos(0),
+      _special(Config::getInstance().pointSpecialRange, Config::getInstance().maxPointsSpecial) {
+  for (const auto& stat : Config::getInstance().statsSpecial) _special.addPoints(stat, 4);
+
+  positionLabel = {leftMargin * 2, topMargin};
+  sizeLabel = {Config::getInstance().sizeTerminal.getX() - leftMargin * 4, 4};
+
+  positionStats = {leftMargin * 3, sizeLabel.getY() + topMargin * 2};
+  sizeStats = {40, 20};
+
+  positionDescription = {positionStats.getX() + sizeStats.getX() + leftMargin, positionStats.getY()};
+  sizeDescription = {Config::getInstance().sizeTerminal.getX() - sizeStats.getX() - leftMargin * 7, 20};
 }
-void SpecialScene::inputMenu(SceneManager* sceneManager) {
-  if (Input::isPressed(TK_UP))
-    increase();
-  else if (Input::isPressed(TK_DOWN))
-    decrease();
+void SpecialScene::increaseCurrentStat() {
+  _special.addPoint(Config::getInstance().statsSpecial[_currentPos]);
+}
+void SpecialScene::decreaseCurrentStat() {
+  _special.removePoint(Config::getInstance().statsSpecial[_currentPos]);
+}
+void SpecialScene::update(SceneManager* sceneManager) {
+  if (Input::getKeyDown(KeyCode::UpArrow)) upward();
+  if (Input::getKeyDown(KeyCode::DownArrow)) downward();
 
-  if (Input::isPressed(TK_LEFT)) downStat();
-  if (Input::isPressed(TK_RIGHT)) upStat();
+  if (Input::getKeyDown(KeyCode::LeftArrow)) decreaseCurrentStat();
+  if (Input::getKeyDown(KeyCode::RightArrow)) increaseCurrentStat();
 
-  if (Input::isPressed(TK_ENTER) && _special.countPoints() == 0) {
-    // GameScene::getInstance()->setSpicial(_special);
+  if (Input::getKeyDown(KeyCode::Enter) && _special.countPoints() == 0) {
     _context->addObject<SpecialDTO>(_special);
-    sceneManager->switchScene("Game");
+    sceneManager->switchScene(gameScene);
   }
 }
 
-void SpecialScene::decrease() {
-  _currentPos = std::min<int>(_special.size() - 1, _currentPos + 1);
+void SpecialScene::downward() {
+  _currentPos = MathUtility::clamp(_currentPos + 1, 0, _special.size() - 1);
 }
-void SpecialScene::increase() {
-  _currentPos = std::max(0, _currentPos - 1);
+void SpecialScene::upward() {
+  _currentPos = MathUtility::clamp(_currentPos - 1, 0, _special.size() - 1);
 }
 
 void SpecialScene::start(SceneManager* sceneManager) {
@@ -44,111 +64,82 @@ void SpecialScene::start(SceneManager* sceneManager) {
 }
 void SpecialScene::end(SceneManager* sceneManager) {}
 void SpecialScene::render() {
-  terminal_clear();
+  Terminal::clear();
 
-  Vector2 size(ConfigTerminal::sizeTerminal.getX() - 20, 5);
-  Vector2 position(10, 3);
-  drawHeader(position, size, "S.P.E.C.I.A.L.");
+  SceneRenderUtility::drawHeader(positionLabel, sizeLabel, "S.P.E.C.I.A.L.");
 
-  Vector2 offset(position.getX() + 3, position.getY() + size.getY() + 2);
+  int x = positionStats.getX();
+  int y = positionStats.getY();
 
-  horizontalBorder(offset, {36, 20});
-  verticalBorder(offset, {36, 20});
-  offset.translate(3, 3);
+  SceneRenderUtility::drawBorder(positionStats, sizeStats);
+  x += leftMargin + 1;
+  y += topMargin / 2 + 1;
 
-  terminal_printf(offset.getX() + 5, offset.getY() - 1, "POINTS REMAINING: %d", _special.countPoints());
-  offset.translate(0, 2);
+  y = renderStat(x, y);
+  y = renderDescriptions(x, y);
+}
+int SpecialScene::renderStat(int x, int y) const {
+  Terminal::printf(x, y++, "POINTS REMAINING: %d", _special.countPoints());
+  y += 2;
 
-  terminal_print(offset.getX(), _currentPos * 2 + offset.getY(), ">");
-  for (const auto& stat : ConfigTerminal::statsSpecial) {
-    if (_special.getValue(stat) >= 7)
-      terminal_color(color_from_name("green"));
-    else if (_special.getValue(stat) >= 4)
-      terminal_color(color_from_name("yellow"));
-    else
-      terminal_color(color_from_name("red"));
+  Terminal::print(x - _cursor.size() - 1, y + _currentPos * 2, _cursor);
+  for (const auto& stat : Config::getInstance().statsSpecial) y = drawStat(x, y, stat);
 
-    string tmp;
-    for (const auto& symbol : stat) tmp.push_back(toupper(symbol));
+  y += 5;
+  SceneRenderUtility::drawHeader(leftMargin * 3, y - 3, Config::getInstance().sizeTerminal.getX() - leftMargin * 6, 4,
+                                 "Распредели все очки и нажми Enter");
+  return y;
+}
+int SpecialScene::drawStat(int x, int y, const string& stat) const {
+  switchColor(stat);
 
-    terminal_print(offset.getX() + 2, offset.getY(), tmp.c_str());
-    terminal_printf(offset.getX() + 19, offset.getY(), "%d", _special.getValue(stat));
+  Terminal::print(x, y, StringUtility::toUpper(stat));
+  // TODO(AsTeFu): 19 is magic number
+  // Как вариант заменить его на поиск самого длинного названия и делать отступ от него. Тут я его сам посчитал
+  Terminal::printf(x + 19, y, "%d", _special.getValue(stat));
 
-    terminal_color(color_from_name("white"));
-    int offsetX = 0;
-    if (_special.getValue(stat) > ConfigTerminal::minPointsSpecial) {
-      terminal_printf(offset.getX() + 23, offset.getY(), "[[-]]");
-      offsetX += 4;
-    }
-    if (_special.getValue(stat) < ConfigTerminal::maxPointsSpecial && _special.countPoints() > 0)
-      terminal_printf(offset.getX() + 23 + offsetX, offset.getY(), "[[+]]");
-    offset.translate(0, 2);
+  drawInputButtons(x, y, stat);
+  y += 2;
+  return y;
+}
+void SpecialScene::drawInputButtons(int x, int y, const string& stat) const {
+  Terminal::setColor(Color::White);
+  int offsetX = 0;
+  if (_special.getValue(stat) > Config::getInstance().pointSpecialRange.minValue) {
+    Terminal::print(x + 23, y, "[[-]]");
+    offsetX += 4;
   }
+  if (_special.getValue(stat) < Config::getInstance().maxPointsSpecial && _special.countPoints() > 0)
+    Terminal::print(x + 23 + offsetX, y, "[[+]]");
+}
+void SpecialScene::switchColor(const string& stat) const {
+  if (_special.getValue(stat) >= 7)
+    Terminal::setColor(Color::Green);
+  else if (_special.getValue(stat) >= 4)
+    Terminal::setColor(Color::Yellow);
+  else
+    Terminal::setColor(Color::Red);
+}
+int SpecialScene::renderDescriptions(int x, int y) const {
+  x = positionDescription.getX() + leftMargin;
+  y = positionDescription.getY() + topMargin;
 
-  offset.translate(0, 5);
-
-  drawHeader({20, offset.getY() - 3}, {ConfigTerminal::sizeTerminal.getX() - 40, 4},
-             "Распредели все очки и нажми Enter");
-
-  // Descriptions
-  offset.set(offset.getX() + 36, position.getY() + size.getY() + 2);
-  verticalBorder(offset, {ConfigTerminal::sizeTerminal.getX() - offset.getX() - 15, 20});
-  horizontalBorder(offset, {ConfigTerminal::sizeTerminal.getX() - offset.getX() - 15, 20});
-
-  terminal_printf(offset.getX() + 5, offset.getY() + 2, "DESCRIPTION:");
-
-  std::vector<string> items = split(_desription[_currentPos], ' ');
-  int line = 60;
-
+  SceneRenderUtility::drawBorder(positionDescription, sizeDescription);
+  Terminal::print(x, y, "DESCRIPTION:");
+  y += 2;
+  drawDescription(x, y);
+  return y;
+}
+void SpecialScene::drawDescription(int x, int y) const {
+  std::vector<string> currentDescription = StringUtility::split(_description[_currentPos], ' ');
   int currentlen = 0;
   int currentY = 0;
-  for (const auto& item : items) {
-    terminal_print(offset.getX() + 5 + currentlen, offset.getY() + 4 + currentY, item.c_str());
-    currentlen += item.length() / 2 + 1;
-    if (currentlen > line) {
+  for (const auto& word : currentDescription) {
+    Terminal::print(x + currentlen, y + currentY, word);
+    currentlen += static_cast<int>(word.size()) / 2 + 1;
+    if (currentlen > lineLen) {
       currentlen = 0;
       currentY++;
     }
   }
-}
-SpecialScene::SpecialScene(Context* context, SceneManager* sceneManager)
-    : Scene(context, sceneManager),
-      _currentPos(0),
-      _special(ConfigTerminal::minPointsSpecial, ConfigTerminal::maxPointsSpecial, ConfigTerminal::pointsSpecial) {
-  string buffer;
-  std::ifstream file("Resource/Direction/Description.txt");
-
-  if (file.is_open()) {
-    while (getline(file, buffer)) {
-      if (buffer.at(0) == '#') {
-        continue;
-      }
-      _desription.push_back(buffer);
-    }
-
-    file.close();
-  } else {
-    std::cout << "File description doesn't exits!" << std::endl;
-  }
-  for (const auto& item : ConfigTerminal::statsSpecial) {
-    for (int i = 0; i < 4; i++) {
-      _special.addPoint(item);
-    }
-  }
-}
-void SpecialScene::upStat() {
-  _special.addPoint(ConfigTerminal::statsSpecial[_currentPos]);
-}
-void SpecialScene::downStat() {
-  _special.removePoint(ConfigTerminal::statsSpecial[_currentPos]);
-}
-
-std::vector<string> SpecialScene::split(const string& s, char regex) {
-  std::stringstream ss(s);
-  string item;
-  vector<string> items;
-  while (std::getline(ss, item, regex)) {
-    items.push_back(std::move(item));
-  }
-  return items;
 }

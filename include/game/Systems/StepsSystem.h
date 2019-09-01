@@ -5,7 +5,7 @@
 #ifndef INCLUDE_GAME_SYSTEMS_STEPSSYSTEM_H_
 #define INCLUDE_GAME_SYSTEMS_STEPSSYSTEM_H_
 
-#include <game/Components/StepsComponent.h>
+#include <game/Components/PlayerComponents/StepsComponent.h>
 #include "ecs/ISystem.h"
 
 class StepsSystem : public ISystem {

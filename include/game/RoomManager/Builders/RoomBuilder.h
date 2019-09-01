@@ -8,7 +8,7 @@
 #include <ecs/Engine.h>
 #include <game/Items/GeneratorInventoryItem.h>
 #include <game/Scenes/SceneManager.h>
-#include <roomcreator/Components/StructureComponent.h>
+#include <editor/Components/StructureComponent.h>
 #include <functional>
 #include <map>
 #include "game/RoomManager/Builders/RoomDTO.h"
@@ -41,11 +41,11 @@ class RoomBuilder {
   void addShop(int x, int y, Tile tile, Engine* engine);
   void addPoint(int x, int y, Tile tile, Engine* engine);
   void addPlayer(int x, int y, Tile tile, Engine* engine);
+  Special generateSpecialEnemy() const;
 
  public:
   RoomBuilder();
   Room* build(StructureComponent* const structure, SceneManager* sceneManager, RoomManager* roomManager);
-  Special generateSpecialEnemy() const;
   void transferPlayer(Entity* player, Room* currentRoom) const;
   void startPlayer(Entity* player, SceneManager* sceneManager);
 };

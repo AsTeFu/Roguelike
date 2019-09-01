@@ -6,9 +6,9 @@
 #include <game/ECSUtility.h>
 #include <game/Scenes/BackpackScene.h>
 #include <game/Utility/DTO/SpecialDTO.h>
-#include <game/Utility/Random.h>
 #include <game/Utility/Utility.h>
-#include <roomcreator/FileUtility.h>
+#include <utilities/FileUtility.h>
+#include <utilities/Random.h>
 #include <string>
 #include "game/RoomManager/Builders/RoomReader.h"
 #include "game/RoomManager/Room.h"
@@ -81,6 +81,6 @@ void RoomManager::start() {
     // _rooms[Room::countRoom] = unique_ptr<Room>(_builder.build(_roomsPatterns[0].get(), sceneManager, this));
     // _currentRoom = _rooms[Room::countRoom].get();
     createRoom();
-    _currentRoom->activateSystem();
+    // _currentRoom->activateSystem();
   }
 }

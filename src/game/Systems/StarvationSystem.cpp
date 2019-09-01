@@ -3,18 +3,18 @@
 //
 
 #include "game/Systems/StarvationSystem.h"
-#include <game/Components/HealthComponent.h>
-#include <game/Components/Movement.h>
+#include <game/Components/BaseComponent/Movement.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
 #include <game/Components/MovementEvent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/StepsComponent.h>
+#include <game/Components/PlayerComponents/StarvationComponent.h>
+#include <game/Components/PlayerComponents/StepsComponent.h>
 #include <algorithm>
 #include <vector>
 #include "ecs/EntityManager.h"
 
 bool StarvationSystem::filter(Entity* entity) const {
-  return entity->hasComponent<StarvationComponent>() && entity->getComponent<Movement>();
+  return entity->hasComponent<StarvationComponent>() && entity->hasComponent<Movement>();
 }
 void StarvationSystem::update(Entity* entity) {
   if (getEntityManager()->isTag("movementEvent")) {

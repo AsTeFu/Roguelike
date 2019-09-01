@@ -5,7 +5,7 @@
 #ifndef INCLUDE_GAME_COMPONENTS_MOVEMENTEVENT_H_
 #define INCLUDE_GAME_COMPONENTS_MOVEMENTEVENT_H_
 
-#include <game/Utility/Vector2.h>
+#include <Utilities/Vector2.h>
 #include "ecs/IComponent.h"
 
 class MovementEvent : public IComponent {

@@ -5,9 +5,9 @@
 #ifndef INCLUDE_GAME_ITEMS_GENERATORINVENTORYITEM_H_
 #define INCLUDE_GAME_ITEMS_GENERATORINVENTORYITEM_H_
 
-#include <game/Components/ArmorComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/ItemComponents/ArmorComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
 #include <game/Items/Inventory/Generator/ReadersItems/ReaderItems.h>
 #include <map>
 #include <string>

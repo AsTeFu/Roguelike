@@ -5,6 +5,7 @@
 #ifndef INCLUDE_GAME_WINDOWS_BASEGAMEWINDOW_H_
 #define INCLUDE_GAME_WINDOWS_BASEGAMEWINDOW_H_
 
+#include <utilities/Terminal.h>
 #include <utility>
 #include "game/Windows/WindowConfig.h"
 
@@ -12,9 +13,6 @@ class BaseGameWindow {
  protected:
   WindowConfig _config;
 
-  virtual void horizontalBorder() const;
-  void horizontalLine(const Vector2& position, const Vector2& size) const;
-  virtual void verticalBorder() const;
   void configurateTerminal() const;
 
  public:
@@ -22,8 +20,8 @@ class BaseGameWindow {
     start();
   }
   void start() {
-    terminal_layer(_config.layer);
-    terminal_crop(_config.position.getX(), _config.position.getY(), _config.size.getX(), _config.size.getY());
+    Terminal::setLayer(_config.layer);
+    Terminal::crop(_config.position, _config.size);
   }
 };
 

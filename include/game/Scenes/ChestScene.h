@@ -11,19 +11,30 @@
 
 class ChestScene : public Scene {
  private:
-  ChestDTO* gameDTO;
+  ChestDTO* game;
   int _currentItem{};
+
+  Vector2 position;
+  Vector2 size;
+  int leftMargin{5};
+  int topMargin{2};
+  const std::string cursor{"=>"};
 
   void decrease();
   void increase();
-  void equipMenu(SceneManager* context);
-  void takeMenu(SceneManager* context);
+  void equipMenu(SceneManager* sceneManager);
+  void takeMenu(SceneManager* sceneManager);
+
+  int renderItems(int x, int y) const;
+  int renderWeaponPlayer(int x, int y) const;
+  int renderArmorPlayer(int x, int y) const;
+  void updateCursor();
+  bool isAvailableSpace() const;
 
  public:
   ChestScene(Context* context, SceneManager* sceneManager) : Scene(context, sceneManager) {}
   void update(SceneManager* sceneManager) override;
   void start(SceneManager* sceneManager) override;
-  void end(SceneManager* sceneManager) override;
   void render() override;
 };
 

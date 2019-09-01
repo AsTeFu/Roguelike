@@ -3,32 +3,46 @@
 //
 
 #include "game/Scenes/InputNameScene.h"
-#include <BearLibTerminal.h>
-#include <game/Utility/ConfigTerminal.h>
+#include <game/Scenes/SceneRenderUtility.h>
+#include <game/Utility/Config.h>
 #include <game/Utility/DTO/NameDTO.h>
 #include <game/Utility/Input.h>
+#include <utilities/KeyCode.h>
+#include <utilities/StringUtility.h>
+#include <utilities/Terminal.h>
 
-void InputNameScene::update(SceneManager *sceneManager) {
-  if (Input::isPressed(TK_ESCAPE)) {
-    terminal_clear();
-    sceneManager->switchScene("Menu");
-  }
+InputNameScene::InputNameScene(Context *const context, SceneManager *sceneManager) : Scene(context, sceneManager) {
+  sizeLabel = {Config::getInstance().sizeTerminal.getX() - leftMargin * 4, 4};
+  positonPica = {Config::getInstance().sizeTerminal.getX() - 30, Config::getInstance().sizeTerminal.getY() - 10};
+  positionInput = {positionLabel.getX() + leftMargin / 2 + 17, positionLabel.getY() + topMargin + sizeLabel.getY()};
+}
+void InputNameScene::start(SceneManager *sceneManager) {
+  Input::read();
+  render();
 
-  if (terminal_read_str(32, 12, name, sizeof(name) - 1) > 4) {
-    terminal_clear();
+  name = Terminal::readString(positionInput, rangeLen.maxValue);
+  StringUtility::trim(&name);
+  if (static_cast<int>(name.size()) >= rangeLen.minValue) {
+    Terminal::clear();
     sceneManager->getContext()->addObject<NameDTO>(name);
-    sceneManager->switchScene("Special");
+    sceneManager->switchScene(specialScene);
   }
 }
+
+void InputNameScene::update(SceneManager *sceneManager) {}
 void InputNameScene::render() {
-  drawHeader({10, 3}, {ConfigTerminal::sizeTerminal.getX() - 20, 5}, "Познокомимся?");
+  SceneRenderUtility::drawHeader(positionLabel, sizeLabel, "Познокомимся?");
 
-  terminal_print(15, 12, "Input your name: ");
-  terminal_print(15, 13, "Больше 4 букв и без пробелов");
+  int x = positionLabel.getX() + leftMargin / 2;
+  int y = positionLabel.getY() + topMargin + sizeLabel.getY();
 
-  terminal_print(ConfigTerminal::sizeTerminal.getX() - 30, ConfigTerminal::sizeTerminal.getY() - 10,
-                 "                 {\\__/} \n"
-                 "введи свое имя   (●_● ) \n"
-                 "без пробелов pls (< < )");
+  Terminal::print(x, y++, "Input your name: ");
+  Terminal::print(x, y, "Больше " + std::to_string(rangeLen.minValue) + " букв!");
+  drawPica();
 }
-InputNameScene::InputNameScene(Context *const context, SceneManager *sceneManager) : Scene(context, sceneManager) {}
+void InputNameScene::drawPica() const {
+  Terminal::print(positonPica,
+                  "                 {\\__/} \n"
+                  "введи свое имя   (●_● ) \n"
+                  "без пробелов pls (< < )");
+}

@@ -5,8 +5,8 @@
 #ifndef INCLUDE_GAME_CAMERA_H_
 #define INCLUDE_GAME_CAMERA_H_
 
-#include <game/Utility/ConfigTerminal.h>
-#include "game/Utility/Vector2.h"
+#include <game/Utility/Config.h>
+#include "Utilities/Vector2.h"
 
 class Camera {
  private:
@@ -17,11 +17,12 @@ class Camera {
 
   explicit Camera(const Vector2& position)
       : _centerPosition(position),
-        _size(ConfigTerminal::sizeTerminal.getX() * ConfigTerminal::areaX / 200,
-              ConfigTerminal::sizeTerminal.getY() * ConfigTerminal::areaY / 200),
-        _border(ConfigTerminal::borderSize),
+        _size(Config::getInstance().sizeTerminal.getX() * Config::getInstance().area.getX() / 200,
+              Config::getInstance().sizeTerminal.getY() * Config::getInstance().area.getY() / 200),
+        _border(Config::getInstance().borderSize),
         _offset(_size.getX() - _centerPosition.getX(), _size.getY() - _centerPosition.getY()) {}
   Camera(const Camera& camera);
+
  public:
   const Vector2& getOffset() const;
   void updatePosition(const Vector2& actorPosition);

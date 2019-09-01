@@ -3,7 +3,8 @@
 //
 
 #include "game/Items/GeneratorInventoryItem.h"
-#include <game/Utility/Random.h>
+#include <game/Items/Weapon.h>
+#include <utilities/Random.h>
 #include <map>
 #include <string>
 #include <vector>
@@ -18,7 +19,7 @@ Rarity ItemGenerator::getRarity(Rarity maxRarity) {
   int rnd = Random::random(100) + 1;
   int currentChance = 0;
   int rRarity = 1;
-  for (const auto& chance : ConfigTerminal::rarityChances) {
+  for (const auto& chance : Config::getInstance().rarityChances) {
     currentChance += chance;
 
     if (rRarity == maxRarity) return static_cast<Rarity>(rRarity);
@@ -68,14 +69,14 @@ map<string, int> ArmorGenerator::setEffects(Rarity rarity) {
 
   int indexState = 0;
   if (rnd > 75) {
-    indexState = Random::random(ConfigTerminal::statsSpecial.size());
-    effects[ConfigTerminal::statsSpecial[indexState]] = Random::random(1 + (rarity / 4), 2 + (rarity / 4));
+    indexState = Random::random(Config::getInstance().statsSpecial.size());
+    effects[Config::getInstance().statsSpecial[indexState]] = Random::random(1 + (rarity / 4), 2 + (rarity / 4));
   }
   if (rnd > 90) {
     int secondIndexState = 0;
-    while ((secondIndexState = (Random::random(ConfigTerminal::statsSpecial.size()))) == indexState) {
+    while ((secondIndexState = (Random::random(Config::getInstance().statsSpecial.size()))) == indexState) {
     }
-    effects[ConfigTerminal::statsSpecial[secondIndexState]] = Random::random(1 + (rarity / 4), 3 + (rarity / 5));
+    effects[Config::getInstance().statsSpecial[secondIndexState]] = Random::random(1 + (rarity / 4), 3 + (rarity / 5));
   }
 
   return effects;

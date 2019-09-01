@@ -5,11 +5,11 @@
 #ifndef INCLUDE_GAME_UTILITY_DTO_PLAYERDTO_H_
 #define INCLUDE_GAME_UTILITY_DTO_PLAYERDTO_H_
 
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/ItemComponents/InventoryComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/LevelComponent.h>
 #include <game/Utility/DTO/ObjectDTO.h>
 #include <string>
 #include <utility>

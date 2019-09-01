@@ -5,6 +5,7 @@
 #ifndef INCLUDE_GAME_PLAYER_SPECIAL_H_
 #define INCLUDE_GAME_PLAYER_SPECIAL_H_
 
+#include <utilities/Range.h>
 #include <map>
 #include <string>
 
@@ -15,29 +16,25 @@ enum StatSpecial { STRENGTH = 0, PERCEPTION, ENDURANCE, CHARISMA, INTELLIGENCE, 
 
 class Special {
  private:
-  int _minValue = 1;
-  int _maxValue = 10;
-  int _startPoints = 40;
+  int _minValue;
+  int _maxValue;
+
+  int _startPoints;
   int _currentPoints;
 
-  map<string, int> _stats;  // = {{"strength", 0},     {"perception", 0}, {"endurance", 0}, {"charisma", 0},
-                            //  {"intelligence", 0}, {"agility", 0},    {"luck", 0}};
-
-  // (Сила) - урон, уровень брони, степень брони
-  // (Восприятие) - видимость??? (сделать ограничение видимости)
-  // (Выносливость) - объем инвенторя
-  // (Харизма) - цены в магазине
-  // (Интеллект) - способности или маг урон
-  // (Ловкость) - уклонение
-  // (Удача) - шанс найти классные вещи в сундуках
+  map<string, int> _stats;
 
  public:
   Special(int minValue, int maxValue, int startPoints);
+  Special(const Range& range, int startPoints);
   bool addPoint(const string& stat);
   int addPoints(const string& stat, int points);
   bool addPoint(StatSpecial stat);
   int addPoints(StatSpecial stat, int points);
   bool removePoint(const string& stat);
+  int removePoints(const string& stat, int points);
+  void addPoints(const std::map<std::string, int>& effects);
+  void removePoints(const std::map<std::string, int>& effects);
   void clear();
   int getValue(const string& stat) const;
   int getValue(StatSpecial stat) const;

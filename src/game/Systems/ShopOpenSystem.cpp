@@ -4,8 +4,8 @@
 
 #include "game/Systems/ShopOpenSystem.h"
 #include <ecs/EntityManager.h>
-#include <game/Components/ShopComponent.h>
-#include <game/Components/Transform.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/EnvironmentComponents/ShopComponent.h>
 #include <game/Utility/DTO/ShopDTO.h>
 #include <game/Utility/Input.h>
 
@@ -16,7 +16,7 @@ void ShopOpenSystem::update(Entity* entity) {
   auto player = getEntityManager()->getByTag("player")[0];
   auto shop = entity->getComponent<ShopComponent>();
 
-  if (Input::isPressed(TK_ENTER) &&
+  if (Input::getKey(KeyCode::Enter) &&
       player->getComponent<Transform>()->position == entity->getComponent<Transform>()->position) {
     getSceneManager()->getContext()->addObject<ShopDTO>(
         shop, player->getComponent<WeaponComponent>(), player->getComponent<ArmorComponent>(),

@@ -1,0 +1,11 @@
+sizeTerminal: 150, 45
+borderSize: 4, 2
+area: 60, 70
+pointSpecialRange: 1, 10
+maxPointsSpecial: 40
+statsSpecial: strength, perception, endurance, charisma, intelligence, agility, luck
+rarityNames: Usual, Rare, Epic, Legendary, Mythical, Sublime
+rarityChances: 50, 30, 12, 5, 2, 1
+maxItemsChest: 4
+disableColor: 255, 40, 40, 40
+experienceRange: 30, 45

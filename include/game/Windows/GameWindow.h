@@ -5,7 +5,6 @@
 #ifndef INCLUDE_GAME_WINDOWS_GAMEWINDOW_H_
 #define INCLUDE_GAME_WINDOWS_GAMEWINDOW_H_
 
-#include <BearLibTerminal.h>
 #include <game/RoomManager/RoomManager.h>
 #include <utility>
 

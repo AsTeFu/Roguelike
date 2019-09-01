@@ -5,16 +5,16 @@
 #ifndef INCLUDE_GAME_SYSTEMS_CASHTRIGGERSYSTEM_H_
 #define INCLUDE_GAME_SYSTEMS_CASHTRIGGERSYSTEM_H_
 
-#include <game/Components/CoinItemComponent.h>
-#include <game/Components/WalletComponent.h>
+#include <game/Components/ItemComponents/CoinItemComponent.h>
+#include <game/Components/PlayerComponents/WalletComponent.h>
 #include <game/Logs/GameLogger.h>
 #include <algorithm>
 #include "ecs/EntityManager.h"
 #include "ecs/ISystem.h"
 #include "ecs/SystemManager.h"
-#include "game/Components/PlayerComponent.h"
-#include "game/Components/Transform.h"
-#include "game/Components/Trigger.h"
+#include "game/Components/BaseComponent/Transform.h"
+#include "game/Components/BaseComponent/Trigger.h"
+#include "game/Components/PlayerComponents/PlayerComponent.h"
 
 class CashTriggerSystem : public ISystem {
  protected:

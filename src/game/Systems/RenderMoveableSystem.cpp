@@ -3,13 +3,14 @@
 //
 
 #include <ecs/EntityManager.h>
-#include <game/Components/Graphic.h>
-#include <game/Components/Movement.h>
+#include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Movement.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
 #include <game/Components/PositionsComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/Transform.h>
 #include <game/Systems/RenderMoveableSystem.h>
-#include <game/Utility/MathUtility.h>
+#include <utilities/MathUtility.h>
+#include <utilities/Terminal.h>
 
 bool RenderMoveableSystem::filter(Entity* entity) const {
   return entity->hasComponent<Graphic>() && entity->hasComponent<Transform>() && entity->hasComponent<Movement>();
@@ -32,19 +33,19 @@ void RenderMoveableSystem::postUpdate(Entity* entity) {
 
   if ((playerTransform->position - transform->position).len2() < perseption * perseption &&
       brezenham(playerTransform->position, transform->position)) {
-    terminal_color(graphic->display.color);
+    Terminal::setColor(graphic->display.color);
     graphic->visible = true;
     graphic->renderPos = transform->position;
   } else {
     if (graphic->visible) {
-      terminal_color(ConfigTerminal::disableColor);
+      Terminal::setColor(Config::getInstance().disableColor);
     } else {
       return;
     }
   }
 
-  terminal_put(graphic->renderPos.getX() + graphic->offset.getX(), graphic->renderPos.getY() + graphic->offset.getY(),
-               graphic->display.graphic);
+  Terminal::put(graphic->renderPos.getX() + graphic->offset.getX(), graphic->renderPos.getY() + graphic->offset.getY(),
+                graphic->display.graphic);
 }
 
 bool RenderMoveableSystem::brezenham(const Vector2& start, const Vector2& end) const {

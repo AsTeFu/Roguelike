@@ -3,9 +3,10 @@
 //
 
 #include "game/Systems/PointRenderSystem.h"
-#include <game/Components/SpecialComponent.h>
-#include <game/Utility/ConfigTerminal.h>
-#include <game/Utility/MathUtility.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Utility/Config.h>
+#include <utilities/MathUtility.h>
+#include <utilities/Terminal.h>
 #include "ecs/EntityManager.h"
 #include "game/Components/PositionsComponent.h"
 
@@ -25,18 +26,18 @@ void PointRenderSystem::postUpdate(Entity* entity) {
 
   if ((positionPlayer->position - positionPoint->position).len2() < perseption * perseption &&
       brezenham(positionPlayer->position, positionPoint->position)) {
-    terminal_color(color_from_argb(255, 180, 180, 180));
+    Terminal::setColor(Color::Gray);
     graphic->visible = true;
   } else {
     if (graphic->visible) {
-      terminal_color(ConfigTerminal::disableColor);
+      Terminal::setColor(Config::getInstance().disableColor);
     } else {
       return;
     }
   }
 
-  terminal_put(positionPoint->position.getX() + graphic->offset.getX(),
-               positionPoint->position.getY() + graphic->offset.getY(), graphic->display.graphic);
+  Terminal::put(positionPoint->position.getX() + graphic->offset.getX(),
+                positionPoint->position.getY() + graphic->offset.getY(), graphic->display.graphic);
 }
 
 bool PointRenderSystem::brezenham(const Vector2& start, const Vector2& end) const {

@@ -5,6 +5,7 @@
 #ifndef INCLUDE_GAME_ITEMS_INVENTORY_GENERATOR_READERSITEMS_READERITEMS_H_
 #define INCLUDE_GAME_ITEMS_INVENTORY_GENERATOR_READERSITEMS_READERITEMS_H_
 
+#include <utilities/Range.h>
 #include <iostream>
 #include <map>
 #include <string>
@@ -13,13 +14,6 @@
 using std::map;
 using std::string;
 using std::vector;
-
-class Range {
- public:
-  int minValue;
-  int maxValue;
-  Range(int min, int max) : minValue(min), maxValue(max) {}
-};
 
 class ReaderItems {
  private:

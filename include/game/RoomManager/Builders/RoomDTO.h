@@ -8,7 +8,7 @@
 #include <map>
 #include <utility>
 #include <vector>
-#include "game/Utility/Vector2.h"
+#include "Utilities/Vector2.h"
 
 class RoomDTO {
   int _width;

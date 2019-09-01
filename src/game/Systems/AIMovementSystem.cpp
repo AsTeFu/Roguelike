@@ -3,28 +3,32 @@
 //
 
 #include "game/Systems/AIMovementSystem.h"
+#include <Utilities/Random.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
 #include <game/Components/PositionsComponent.h>
-#include <game/Utility/MathUtility.h>
-#include <game/Utility/Random.h>
+#include <utilities/MathUtility.h>
 #include "ecs/EntityManager.h"
 #include "game/Components/AIController.h"
-#include "game/Components/Movement.h"
-#include "game/Components/Transform.h"
+#include "game/Components/BaseComponent/Movement.h"
+#include "game/Components/BaseComponent/Transform.h"
 
 bool AIMovementSystem::filter(Entity* entity) const {
   return entity->hasComponent<AIController>() && entity->hasComponent<Transform>() && entity->hasComponent<Movement>();
 }
 void AIMovementSystem::preUpdate(Entity* entity) {
   auto movement = entity->getComponent<Movement>();
-  auto enemy = entity->getComponent<Transform>();
+  auto transform = entity->getComponent<Transform>();
+  auto special = entity->getComponent<SpecialComponent>();
   auto player = getEntityManager()->getByTag("player")[0]->getComponent<Transform>();
 
   // TODO(AsTeFu): special
-  if ((player->position - enemy->position).len2() < 100 && brezenham(player->position, enemy->position)) {
-    Vector2 dir = player->position - enemy->position;
+  int distance = special->getValue(PERCEPTION) * special->getValue(PERCEPTION);
+  if ((player->position - transform->position).len2() < distance && brezenham(player->position, transform->position)) {
+    Vector2 dir = player->position - transform->position;
     Vector2 len{
-        (player->position.getX() - enemy->position.getX()) * (player->position.getX() - enemy->position.getX()),
-        (player->position.getY() - enemy->position.getY()) * (player->position.getY() - enemy->position.getY())};
+        (player->position.getX() - transform->position.getX()) * (player->position.getX() - transform->position.getX()),
+        (player->position.getY() - transform->position.getY()) *
+            (player->position.getY() - transform->position.getY())};
 
     if (len.getX() > len.getY())
       dir.getX() > 0 ? movement->direction = Vector2::RIGHT : movement->direction = Vector2::LEFT;

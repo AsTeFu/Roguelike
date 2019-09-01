@@ -5,13 +5,13 @@
 #ifndef INCLUDE_GAME_UTILITY_DTO_SHOPDTO_H_
 #define INCLUDE_GAME_UTILITY_DTO_SHOPDTO_H_
 
-#include <game/Components/HealthComponent.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/ShopComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/WalletComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/EnvironmentComponents/ShopComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/InventoryComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/StarvationComponent.h>
+#include <game/Components/PlayerComponents/WalletComponent.h>
 #include "game/Utility/DTO/ObjectDTO.h"
 
 class ShopDTO : public ObjectDTO {

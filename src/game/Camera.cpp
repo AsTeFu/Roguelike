@@ -3,7 +3,7 @@
 //
 
 #include "game/Camera.h"
-#include <game/Utility/ConfigTerminal.h>
+#include <game/Utility/Config.h>
 
 const Vector2& Camera::getOffset() const {
   return _offset;
@@ -24,7 +24,7 @@ void Camera::updatePosition(const Vector2& actorPosition) {
   _offset.set(_size.getX() - _centerPosition.getX(), _size.getY() - _centerPosition.getY());
 }
 Camera& Camera::getInstance() {
-  static Camera instance(ConfigTerminal::startPos);
+  static Camera instance({1, 1});
   return instance;
 }
 void Camera::setStartPos(const Vector2& pos) {

@@ -214,7 +214,7 @@
 #define TK_ALIGN_MIDDLE       12
 
 /*
- * Terminal uses unsigned 32-bit value for color representation in Argb order (0xAARRGGBB), e. g.
+ * Terminal uses unsigned 32-bit value for color representation in Color order (0xAARRGGBB), e. g.
  * a) solid red is 0xFFFF0000
  * b) half-transparent green is 0x8000FF00
  */

@@ -4,129 +4,146 @@
 
 #include "game/Scenes/BackpackScene.h"
 #include <BearLibTerminal.h>
+#include <game/Scenes/SceneRenderUtility.h>
+#include <utilities/Color.h>
+#include <utilities/Terminal.h>
 #include <algorithm>
 #include <string>
 #include "game/Utility/Input.h"
 
+BackpackScene::BackpackScene(Context* const context, SceneManager* sceneManager) : Scene(context, sceneManager) {}
 void BackpackScene::update(SceneManager* sceneManager) {
-  if (Input::isPressed(TK_ESCAPE) || Input::isPressed(TK_I)) {
-    // terminal_clear_area(ConfigTerminal::positionChestScene.getX(), ConfigTerminal::positionChestScene.getY(),
-    //                     ConfigTerminal::sizeChestScene.getX(), ConfigTerminal::sizeChestScene.getY());
+  if (Input::getKeyDown(KeyCode::Escape) || Input::getKey(KeyCode::I)) {
     sceneManager->switchScene("Game");
   }
-  if (Input::isPressed(TK_UP)) increase();
-  if (Input::isPressed(TK_DOWN)) decrease();
-  if (Input::isPressed(TK_C)) deleteMenu(sceneManager);
+  if (Input::getKeyDown(KeyCode::UpArrow)) increase();
+  if (Input::getKeyDown(KeyCode::DownArrow)) decrease();
+  if (Input::getKeyDown(KeyCode::C)) deleteMenu(sceneManager);
 
-  if (Input::isPressed(TK_SPACE)) equipMenu(sceneManager);
+  if (Input::getKeyDown(KeyCode::Space)) equipMenu(sceneManager);
 }
 void BackpackScene::start(SceneManager* sceneManager) {
   backpack = _context->getObject<BackpackDTO>();
   _currentItem = 0;
+
+  positionInv = Vector2::ZERO;
+  sizeInv = {Config::getInstance().sizeTerminal.getX() * Config::getInstance().area.getX() / 100,
+             Config::getInstance().sizeTerminal.getY() * Config::getInstance().area.getY() / 100};
+
+  positionSpecial = {Config::getInstance().sizeTerminal.getX() * Config::getInstance().area.getX() / 100, 0};
+  sizeSpecial = {Config::getInstance().sizeTerminal.getX() * (100 - Config::getInstance().area.getX()) / 100,
+                 Config::getInstance().sizeTerminal.getY()};
 }
-void BackpackScene::end(SceneManager* context) {}
 void BackpackScene::render() {
-  // Inventory
-  Vector2 position{};
-  Vector2 size(ConfigTerminal::sizeTerminal.getX() * ConfigTerminal::areaX / 100,
-               ConfigTerminal::sizeTerminal.getY() * ConfigTerminal::areaY / 100);
+  renderInventory();
+  renderSpecial();
+}
+void BackpackScene::renderSpecial() const {
+  Terminal::setLayer(1);
+  Terminal::clearArea(positionSpecial, sizeSpecial);
+  Terminal::setLayer(9);
+  Terminal::clearArea(positionSpecial, sizeSpecial);
+  Terminal::setColor(Color::White);
 
-  terminal_layer(0);
-  terminal_clear_area(position.getX(), position.getY(), size.getX(), size.getY());
+  int x = positionSpecial.getX() + leftMargin;
+  int y = positionSpecial.getY() + topMargin;
 
-  terminal_layer(9);
-  terminal_clear_area(position.getX(), position.getY(), size.getX(), size.getY());
+  SceneRenderUtility::drawBorder(positionSpecial, sizeSpecial);
+  terminal_printf(x, positionSpecial.getY(), "SPECIAL");
 
-  terminal_color(color_from_argb(255, 255, 255, 255));
+  y = renderSpecial(x, y);
+}
+void BackpackScene::renderInventory() const {
+  Terminal::setLayer(0);
+  Terminal::clearArea(positionInv, sizeInv);
+  Terminal::setLayer(9);
+  Terminal::clearArea(positionInv, sizeInv);
+  Terminal::setColor(Color::White);
 
-  int leftIndent = 5;
-  int topIndent = 2;
-  int offsetX = position.getX() + leftIndent;
-  int offsetY = position.getY() + topIndent;
+  int x = positionInv.getX() + leftMargin;
+  int y = positionInv.getY() + topMargin;
 
-  horizontalLine(position, size);
-  verticalBorder(position, size);
-  terminal_printf(offsetX, position.getY(), "EQUIPMENTS");
+  SceneRenderUtility::horizontalLine(positionInv, sizeInv.getX());
+  SceneRenderUtility::verticalBorder(positionInv, sizeInv);
+  Terminal::print(x, positionInv.getY(), "EQUIPMENTS");
 
-  terminal_printf(offsetX, offsetY++, "Weapon:");
-  offsetX += 3;
+  Terminal::print(x, y++, "Weapon:");
+  x += leftMargin;
 
-  if (_currentItem == 0) terminal_print(offsetX - 3, offsetY, "=>");
-  offsetY += backpack->weaponComponent->weapon->printItemExtended(offsetX, offsetY) + 1;
-  offsetY += 1;
+  if (_currentItem == 0) renderCursor(x, y);
+  y = renderWeapon(x, y) + 1;
 
-  terminal_printf(offsetX - 3, offsetY++, "Armors:");
-  int i = 1;
-  for (const auto& pair : backpack->armorComponent->equipments) {
-    if (_currentItem == i) terminal_print(offsetX - 3, offsetY, "=>");
-    offsetY += pair.second->printItemExtended(offsetX, offsetY) + 1;
-    i++;
-  }
-  offsetY += 1;
+  Terminal::print(x - leftMargin, y++, "Armors:");
+  y = renderArmors(x, y) + 1;
 
-  horizontalLine({position.getX(), position.getY() + offsetY}, size);
-  terminal_print(offsetX, offsetY, "INVENTORY");
+  SceneRenderUtility::horizontalLine(positionInv.getX(), positionInv.getY() + y, sizeInv.getX());
+  Terminal::print(x, y, "INVENTORY");
+  y += 2;
 
-  offsetY += 2;
+  Terminal::printf(x - leftMargin, y, "Available space: %d/%d",
+                   backpack->getComponent<InventoryComponent>()->items.size(),
+                   backpack->getComponent<InventoryComponent>()->maxItems);
 
-  terminal_printf(offsetX - 3, offsetY++, "Available space: %d/%d", backpack->inventoryComponent->items.size(),
-                  backpack->inventoryComponent->maxItems);
+  y = renderPlayerInventory(x, y + 2);
+}
+int BackpackScene::renderSpecial(int x, int y) const {
+  for (const auto& stat : Config::getInstance().statsSpecial) y = renderStat(x, y, stat) + 2;
+  return y;
+}
+int BackpackScene::renderStat(int x, int y, const string& stat) const {
+  std::string upperEffect = getNameStat(stat);
 
-  offsetY += 1;
+  auto special = backpack->getComponent<SpecialComponent>();
+  int value = special->special.getValue(stat);
+  int bonusValue = special->addictiveSpecial.getValue(stat);
 
-  for (const auto& item : backpack->inventoryComponent->items) {
-    if (_currentItem == i) terminal_print(offsetX - 3, offsetY, "=>");
-    offsetY += item->printItemExtended(offsetX, offsetY) + 1;
-    i++;
-  }
+  if (bonusValue)
+    Terminal::printf(x, y, "%s%d+%d", upperEffect.c_str(), value, bonusValue);
+  else
+    Terminal::printf(x, y, "%s%d", upperEffect.c_str(), value);
 
-  // SPECIAl
-  position = {ConfigTerminal::sizeTerminal.getX() * ConfigTerminal::areaX / 100, 0};
-  size = {ConfigTerminal::sizeTerminal.getX() * (100 - ConfigTerminal::areaX) / 100,
-          ConfigTerminal::sizeTerminal.getY()};
-
-  terminal_layer(1);
-  terminal_clear_area(position.getX(), position.getY(), size.getX(), size.getY());
-
-  terminal_layer(9);
-  terminal_clear_area(position.getX(), position.getY(), size.getX(), size.getY());
-
-  offsetX = position.getX() + leftIndent;
-  offsetY = position.getY() + topIndent;
-
-  horizontalBorder(position, size);
-  verticalBorder(position, size);
-  terminal_printf(position.getX() + leftIndent, position.getY(), "SPECIAL");
-
-  for (const auto& stat : ConfigTerminal::statsSpecial) {
-    int bonusEffect = 0;
-    for (const auto& pairArmor : backpack->armorComponent->equipments) {
-      if (pairArmor.second->effects.count(stat)) bonusEffect += pairArmor.second->effects[stat];
-    }
-
-    size_t maxLen = 16;
-    std::string upperEffect{};
-    for (size_t symbol = 0; symbol < maxLen; ++symbol) {
-      if (symbol < stat.size())
-        upperEffect.push_back(toupper(stat[symbol]));
-      else if (symbol == stat.size())
-        upperEffect.push_back(':');
-      else
-        upperEffect.push_back(' ');
-    }
-
-    int value = backpack->specialComponent->special.getValue(stat);
-
-    if (bonusEffect)
-      terminal_printf(offsetX, offsetY, "%s%d+%d", upperEffect.c_str(), value, bonusEffect);
+  return y;
+}
+std::string BackpackScene::getNameStat(const string& stat) const {
+  std::string statName;
+  for (size_t i = 0; i < lenStatName; ++i) {
+    if (i < stat.size())
+      statName.push_back(toupper(stat[i]));
+    else if (i == stat.size())
+      statName.push_back(':');
     else
-      terminal_printf(offsetX, offsetY, "%s%d", upperEffect.c_str(), value);
-
-    offsetY += 2;
+      statName.push_back(' ');
   }
+  return statName;
+}
+int BackpackScene::renderPlayerInventory(int x, int y) const {
+  int i = static_cast<int>(backpack->getComponent<ArmorComponent>()->equipments.size()) + 1;
+  for (const auto& item : backpack->getComponent<InventoryComponent>()->items) {
+    if (_currentItem == i) renderCursor(x, y);
+    y += item->printItemExtended(x, y) + 1;
+    i++;
+  }
+  return y;
+}
+int BackpackScene::renderArmors(int x, int y) const {
+  int i = 1;
+  for (const auto& pair : backpack->getComponent<ArmorComponent>()->equipments) {
+    if (_currentItem == i) renderCursor(x, y);
+    y += pair.second->printItemExtended(x, y) + 1;
+    i++;
+  }
+  return y;
+}
+int BackpackScene::renderWeapon(int x, int y) const {
+  y += backpack->getComponent<WeaponComponent>()->weapon->printItemExtended(x, y) + 1;
+  return y;
+}
+void BackpackScene::renderCursor(int x, int y) const {
+  Terminal::print(x - static_cast<int>(cursor.size()), y, cursor);
 }
 void BackpackScene::decrease() {
-  _currentItem = std::min<int>(backpack->inventoryComponent->items.size() + backpack->armorComponent->equipments.size(),
+  _currentItem = std::min<int>(backpack->getComponent<InventoryComponent>()->items.size() +
+                                   backpack->getComponent<ArmorComponent>()->equipments.size(),
                                _currentItem + 1);
 }
 void BackpackScene::increase() {
@@ -134,42 +151,22 @@ void BackpackScene::increase() {
 }
 
 void BackpackScene::equipMenu(SceneManager* sceneManager) {
-  if (_currentItem - static_cast<int>(backpack->armorComponent->equipments.size()) <= 0) return;
-
-  int currItem = _currentItem - backpack->armorComponent->equipments.size() - 1;
-
-  InventoryItem* item = backpack->inventoryComponent->items[currItem].get();
-
-  if (item->itemType == ArmorType) {
-    auto* armor = new Armor(*dynamic_cast<Armor*>(item));
-    auto* pItem = new Armor(*backpack->armorComponent->equipments[armor->slot]);
-    backpack->inventoryComponent->items[currItem] = std::unique_ptr<Armor>(pItem);
-    backpack->armorComponent->equipments[armor->slot] = std::unique_ptr<Armor>(armor);
-  }
-  if (item->itemType == WeaponType) {
-    auto* weapon = new Weapon(*dynamic_cast<Weapon*>(item));
-    auto* pItem = new Weapon(*backpack->weaponComponent->weapon);
-    backpack->inventoryComponent->items[currItem] = std::unique_ptr<Weapon>(pItem);
-    backpack->weaponComponent->weapon = std::unique_ptr<Weapon>(weapon);
-  }
-
-  // TODO(AsTeFu): special
-  backpack->specialComponent->addictiveSpecial.clear();
-  for (const auto& armor : backpack->armorComponent->equipments) {
-    for (const auto& effect : armor.second->effects) {
-      for (int i = 0; i < effect.second; ++i) {
-        backpack->specialComponent->addictiveSpecial.addPoint(effect.first);
-      }
-    }
-  }
+  if (isInventory()) return;
+  int currItem = getInventoryItemIndex();
+  backpack->getComponent<InventoryComponent>()->items[currItem]->equipItem(backpack->player, currItem);
+}
+int BackpackScene::getInventoryItemIndex() const {
+  return _currentItem - static_cast<int>(backpack->getComponent<ArmorComponent>()->equipments.size()) - 1;
+}
+bool BackpackScene::isInventory() const {
+  return _currentItem - static_cast<int>(backpack->getComponent<ArmorComponent>()->equipments.size()) <= 0;
 }
 
 void BackpackScene::deleteMenu(SceneManager* sceneManager) {
-  if (_currentItem - static_cast<int>(backpack->armorComponent->equipments.size()) <= 0) return;
-  int currItem = _currentItem - backpack->armorComponent->equipments.size() - 1;
+  if (_currentItem - static_cast<int>(backpack->getComponent<ArmorComponent>()->equipments.size()) <= 0) return;
+  int currItem = _currentItem - backpack->getComponent<ArmorComponent>()->equipments.size() - 1;
 
-  backpack->inventoryComponent->deleteItem(currItem);
+  backpack->getComponent<InventoryComponent>()->deleteItem(currItem);
 
-  if (backpack->inventoryComponent->items.size() == static_cast<size_t>(currItem)) _currentItem--;
+  if (backpack->getComponent<InventoryComponent>()->items.size() == static_cast<size_t>(currItem)) _currentItem--;
 }
-BackpackScene::BackpackScene(Context* const context, SceneManager* sceneManager) : Scene(context, sceneManager) {}

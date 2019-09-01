@@ -3,7 +3,7 @@
 //
 
 #include "game/Systems/StepsSystem.h"
-#include <game/Components/Movement.h>
+#include <game/Components/BaseComponent/Movement.h>
 #include <game/Components/MovementEvent.h>
 #include <algorithm>
 #include "ecs/EntityManager.h"

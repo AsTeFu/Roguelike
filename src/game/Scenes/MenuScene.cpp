@@ -3,77 +3,82 @@
 //
 
 #include "game/Scenes/MenuScene.h"
-#include <BearLibTerminal.h>
+#include <utilities/MathUtility.h>
+#include <utilities/Terminal.h>
 #include <algorithm>
-#include "game/Scenes/GameScene.h"
 #include "game/Scenes/SceneManager.h"
-#include "game/Scenes/SettingScene.h"
-#include "game/Scenes/SpecialScene.h"
-#include "game/Utility/ConfigTerminal.h"
+#include "game/Utility/Config.h"
 #include "game/Utility/Input.h"
-#include "game/Utility/Vector2.h"
 
-void MenuScene::update(SceneManager* sceneManager) {
-  inputMenu(sceneManager);
+MenuScene::MenuScene(Context* context, SceneManager* sceneManager) : Scene(context, sceneManager), _currentElement(0) {
+  _menuElements.insert(make_pair("NewGame", bind(&MenuScene::newGame, this, _1)));
+  _menuElements.insert(make_pair("Continue", bind(&MenuScene::continueGame, this, _1)));
+  _menuElements.insert(make_pair("Editor", bind(&MenuScene::editor, this, _1)));
+  _menuElements.insert(make_pair("Setting", bind(&MenuScene::setting, this, _1)));
+  _menuElements.insert(make_pair("Exit", bind(&MenuScene::exit, this, _1)));
+
+  // TODO(AsTeFu): я не придумал, как объединить мапу и вектор, так чтобы сохранился порядок в векторе.
+  // Не могу создать мапу на основе вектора, а вектор на основе мапы теряет порядок
+  _namesMenuElements = {"NewGame", "Continue", "Editor", "Setting", "Exit"};
 }
 void MenuScene::start(SceneManager* sceneManager) {
-  // update(sceneManager);
+  position = {Config::getInstance().sizeTerminal.getX() / 2 - 10, Config::getInstance().sizeTerminal.getY() / 2 - 5};
   render();
 }
 void MenuScene::end(SceneManager* sceneManager) {}
+
+void MenuScene::update(SceneManager* sceneManager) {
+  if (Input::getKeyDown(KeyCode::UpArrow) || Input::getKeyDown(KeyCode::W)) upward();
+  if (Input::getKeyDown(KeyCode::DownArrow) || Input::getKeyDown(KeyCode::S)) downward();
+  if (Input::getKey(KeyCode::Enter)) enterMenuItem(sceneManager);
+}
+void MenuScene::downward() {
+  _currentElement = MathUtility::clamp(_currentElement + 1, 0, _namesMenuElements.size() - 1);
+}
+void MenuScene::upward() {
+  _currentElement = MathUtility::clamp(_currentElement - 1, 0, _namesMenuElements.size() - 1);
+}
+
+void MenuScene::enterMenuItem(SceneManager* sceneManager) {
+  Terminal::clearArea({}, Config::getInstance().sizeTerminal);
+  std::cout << "Menu element: " << _namesMenuElements[_currentElement] << std::endl;
+  _menuElements[_namesMenuElements[_currentElement]](sceneManager);
+}
+
 void MenuScene::render() {
-  terminal_layer(47);
-  terminal_clear_area(0, 0, ConfigTerminal::sizeTerminal.getX(), ConfigTerminal::sizeTerminal.getY());
-  terminal_color(color_from_argb(255, 255, 255, 255));
+  Terminal::setLayer(_layer);
+  Terminal::clearArea({}, Config::getInstance().sizeTerminal);
+  Terminal::setColor(Color::White);
 
-  Vector2 firstPos = {ConfigTerminal::sizeTerminal.getX() / 2 - 10, ConfigTerminal::sizeTerminal.getY() / 2 - 5};
+  drawPica();
+  Terminal::print(position.getX(), position.getY() - 5, "Roguelike by ATF");
 
-  terminal_printf(firstPos.getX(), firstPos.getY() - 5, "Roguelike by ATF");
-
-  int offsetY = 0;
-  for (const auto& item : _menuItems) terminal_printf(firstPos.getX(), firstPos.getY() + offsetY++, item.c_str());
-
-  terminal_printf(firstPos.getX() - 2, firstPos.getY() + _menuItem, ">");
-
-  terminal_print(5, 2,
-                 "{\\__/}\n"
-                 "( ●_●) держи вкусняшку\n"
-                 "( >>[color=green]*[/color])");
+  int y = 0;
+  for (const auto& name : _namesMenuElements) Terminal::print(position.getX(), position.getY() + y++, name);
+  drawCursor();
 }
-void MenuScene::inputMenu(SceneManager* context) {
-  if (Input::isPressed(TK_UP))
-    increase();
-  else if (Input::isPressed(TK_DOWN))
-    decrease();
-
-  if (Input::isPressed(TK_ENTER)) enterMenuItem(context);
+void MenuScene::drawCursor() const {
+  Terminal::print(position.getX() - static_cast<int>(cursor.size()) - 1, position.getY() + _currentElement, cursor);
+}
+void MenuScene::drawPica() const {
+  Terminal::print(positionPica,
+                  "{\\__/}\n"
+                  "( ●_●) держи вкусняшку\n"
+                  "( >>[color=green]*[/color])");
 }
 
-void MenuScene::decrease() {
-  _menuItem = std::min<int>(_menuItems.size() - 1, _menuItem + 1);
+void MenuScene::newGame(SceneManager* sceneManager) {
+  sceneManager->switchScene(inputnameScene);
 }
-void MenuScene::increase() {
-  _menuItem = std::max(0, _menuItem - 1);
+void MenuScene::continueGame(SceneManager* sceneManager) {
+  sceneManager->switchScene(inputnameScene);
 }
-
-void MenuScene::enterMenuItem(SceneManager* context) {
-  std::cout << _menuItems[_menuItem] << std::endl;
-  terminal_clear_area(0, 0, ConfigTerminal::sizeTerminal.getX(), ConfigTerminal::sizeTerminal.getY());
-
-  if (_menuItem == NewGame) {
-    context->switchScene("InputName");
-    // GameScene::getInstance()->newGame();
-  }
-  if (_menuItem == Continue) {
-    context->switchScene("Creator");
-    // context->switchScene(SpecialScene::getInstance());
-    // context->switchScene(GameScene::getInstance());
-    // GameScene::getInstance()->continueGame();
-  }
-  if (_menuItem == Setting) {
-    // context->switchScene(SettingScene::getInstance());
-  }
-  if (_menuItem == Exit) {
-    terminal_close();
-  }
+void MenuScene::editor(SceneManager* sceneManager) {
+  sceneManager->switchScene(editorScene);
+}
+void MenuScene::setting(SceneManager* sceneManager) {
+  sceneManager->switchScene(settingScene);
+}
+void MenuScene::exit(SceneManager* sceneManager) {
+  Terminal::close();
 }

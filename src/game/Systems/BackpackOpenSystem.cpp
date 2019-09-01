@@ -3,8 +3,8 @@
 //
 
 #include "game/Systems/BackpackOpenSystem.h"
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/PlayerComponent.h>
+#include <game/Components/ItemComponents/InventoryComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
 #include <game/Utility/DTO/BackpackDTO.h>
 #include <game/Utility/Input.h>
 #include "ecs/EntityManager.h"
@@ -16,10 +16,8 @@ void BackpackOpenSystem::update(Entity* entity) {
   // entity->getComponent<InventoryComponent>()->maxItems =
   //    entity->getComponent<SpecialComponent>()->getValue(STRENGTH) / 2;
 
-  if (Input::isPressed(TK_I)) {
-    getSceneManager()->getContext()->addObject<BackpackDTO>(
-        entity->getComponent<WeaponComponent>(), entity->getComponent<ArmorComponent>(),
-        entity->getComponent<InventoryComponent>(), entity->getComponent<SpecialComponent>());
+  if (Input::getKey(KeyCode::I)) {
+    getSceneManager()->getContext()->addObject<BackpackDTO>(entity);
     getSceneManager()->switchScene("Backpack");
   }
 }

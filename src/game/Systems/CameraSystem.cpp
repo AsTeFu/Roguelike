@@ -3,12 +3,12 @@
 //
 
 #include "game/Systems/CameraSystem.h"
-#include <game/Components/Graphic.h>
+#include <game/Components/BaseComponent/Graphic.h>
 #include "ecs/EntityManager.h"
-#include "game/Components/CameraComponent.h"
-#include "game/Components/Movement.h"
-#include "game/Components/Transform.h"
-#include "game/Utility/MathUtility.h"
+#include "game/Components/BaseComponent/CameraComponent.h"
+#include "game/Components/BaseComponent/Movement.h"
+#include "game/Components/BaseComponent/Transform.h"
+#include "utilities/MathUtility.h"
 
 bool CameraSystem::filter(Entity* entity) const {
   return entity->hasComponent<CameraComponent>() && entity->hasComponent<Transform>();

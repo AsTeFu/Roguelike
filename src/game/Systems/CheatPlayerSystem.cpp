@@ -3,11 +3,10 @@
 //
 
 #include "game/Systems/CheatPlayerSystem.h"
-#include <BearLibTerminal.h>
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/PlayerComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/LevelComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
 #include <game/Items/GeneratorInventoryItem.h>
 #include <game/Utility/Input.h>
 
@@ -15,13 +14,13 @@ bool CheatPlayerSystem::filter(Entity* entity) const {
   return entity->hasComponent<PlayerComponent>();
 }
 void CheatPlayerSystem::update(Entity* entity) {
-  if (Input::isPressed(TK_T)) {
+  if (Input::getKeyDown(KeyCode::T)) {
     GeneratorInventoryItem generator;
     entity->getComponent<WeaponComponent>()->weapon =
         std::unique_ptr<Weapon>(generator.generateWeapon(Sublime, Sublime));
   }
 
-  if (Input::isPressed(TK_Y)) {
+  if (Input::getKeyDown(KeyCode::Y)) {
     GeneratorInventoryItem generator;
     entity->getComponent<ArmorComponent>()->equipments.clear();
     entity->getComponent<ArmorComponent>()->equipments.emplace(
@@ -34,14 +33,16 @@ void CheatPlayerSystem::update(Entity* entity) {
         Boots, std::unique_ptr<Armor>(generator.generateArmor(Boots, Sublime, Sublime)));
   }
 
-  if (Input::isPressed(TK_U)) {
+  if (Input::getKeyDown(KeyCode::U)) {
     GeneratorInventoryItem generator;
     entity->getComponent<WeaponComponent>()->weapon = std::unique_ptr<Weapon>(generator.generateWeapon());
   }
 
-  if (Input::isPressed(TK_L)) {
+  if (Input::getKeyDown(KeyCode::I)) {
     auto level = entity->getComponent<LevelComponent>();
-    if (level->addExperience(level->maxExperience - level->currentExperience + 1)) {
+
+    // TODO(AsTeFu): тут уровень
+    if (level->addExperience()) {
       entity->getComponent<SpecialComponent>()->special.addAvailablePoint();
       entity->getComponent<AbilitiesComponent>()->available++;
     }

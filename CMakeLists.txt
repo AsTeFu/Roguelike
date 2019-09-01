@@ -23,6 +23,7 @@ target_link_libraries(${PROJECT_NAME} ${BLT_LIBRARIES})
 
 file(COPY ${BLT_LIBRARY} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${PROJECT_SOURCE_DIR}/Resource DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${PROJECT_SOURCE_DIR}/Roguelike.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # Add linting before compilation
 include(CppLint)

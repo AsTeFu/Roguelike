@@ -3,19 +3,21 @@
 //
 
 #include "game/Systems/DeadSystem.h"
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/CameraComponent.h>
-#include <game/Components/ChestComponent.h>
-#include <game/Components/Graphic.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/PlayerComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/WeaponComponent.h>
+#include <utilities/Random.h>
+#include <game/Components/BaseComponent/CameraComponent.h>
+#include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/EnvironmentComponents/ChestComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/LevelComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
+#include <game/Items/CoinItem.h>
 #include <game/Logs/GameLogger.h>
-#include <game/Utility/ConfigTerminal.h>
-#include <game/Utility/Random.h>
+#include <game/Utility/Config.h>
+#include <game/Utility/LevelUtility.h>
 #include "ecs/SystemManager.h"
 
 bool DeadSystem::filter(Entity* entity) const {
@@ -25,43 +27,29 @@ void DeadSystem::update(Entity* entity) {
   auto healthComponent = entity->getComponent<HealthComponent>();
 
   if (healthComponent->health <= 0) {
-    std::cout << "Entity is dead" << std::endl;
+    std::cout << "Enemy is dead" << std::endl;
 
     auto player = getEntityManager()->getByTag("player")[0];
     int playerLuck = player->getComponent<SpecialComponent>()->getValue(LUCK);
 
-    // Player experience
-    int experience = 30 + Random::random(15);
+    LevelUtility::addExperience(player);
 
-    if (player->getComponent<LevelComponent>()->addExperience(experience)) {
-      player->getComponent<SpecialComponent>()->special.addAvailablePoint();
-      player->getComponent<AbilitiesComponent>()->available++;
-      GameLogger::getInstance().add("[color=Sublime]Level UP!");
-    }
-
-    for (const auto& item : *getEntityManager()) {
-      if (item.hasComponent<ChestComponent>() &&
-          item.getComponent<Transform>()->position == entity->getComponent<Transform>()->position) {
-        auto chest = item.getComponent<ChestComponent>();
-        addItems(chest, entity, playerLuck);
-        return;
-      }
-    }
-
-    auto deadEntity = getEntityManager()->createEntity();
-    deadEntity->addComponent<Transform>(entity->getComponent<Transform>()->position);
-    deadEntity->addComponent<Graphic>(Display('&', color_from_name("red")));
-    deadEntity->addComponent<ChestComponent>();
-    deadEntity->getComponent<ChestComponent>()->isOpen = true;
-    // deadEntity->getComponent<Graphic>()->offset =
-    // getEntityManager()->getByTag("camera")[0]->getComponent<CameraComponent>()->offset;
-
-    addItems(deadEntity->getComponent<ChestComponent>(), entity, playerLuck);
+    auto deadEntity = findDeadEnemy(entity->getComponent<Transform>());
+    if (deadEntity == nullptr) deadEntity = createChest(entity);
+    fillChest(deadEntity->getComponent<ChestComponent>(), entity, playerLuck);
 
     getSystemManager()->addEntity(deadEntity);
   }
 }
-void DeadSystem::addItems(ChestComponent* chest, Entity* enemy, int playerLuck) {
+Entity* DeadSystem::createChest(const Entity* entity) const {
+  auto deadEntity = getEntityManager()->createEntity();
+  deadEntity->addComponent<Transform>(entity->getComponent<Transform>()->position);
+  deadEntity->addComponent<Graphic>(Display('&', entity->getComponent<Graphic>()->display.color));
+  deadEntity->addComponent<ChestComponent>();
+  deadEntity->getComponent<ChestComponent>()->isOpen = true;
+  return deadEntity;
+}
+void DeadSystem::fillChest(ChestComponent* chest, Entity* enemy, int playerLuck) {
   chest->addItem<Weapon>(new Weapon(*dynamic_cast<Weapon*>(enemy->getComponent<WeaponComponent>()->weapon.get())));
   for (const auto& armor : enemy->getComponent<ArmorComponent>()->equipments) {
     chest->addItem<Armor>(new Armor(*dynamic_cast<Armor*>(armor.second.get())));
@@ -70,4 +58,13 @@ void DeadSystem::addItems(ChestComponent* chest, Entity* enemy, int playerLuck) 
 
   getSystemManager()->deleteEntity(enemy->getID());
   getEntityManager()->deleteEntity(enemy->getID());
+}
+Entity* DeadSystem::findDeadEnemy(Transform* const transform) {
+  for (auto& deadEnemy : *getEntityManager()) {
+    if (deadEnemy.hasComponent<ChestComponent>() &&
+        deadEnemy.getComponent<Transform>()->position == transform->position) {
+      return &deadEnemy;
+    }
+  }
+  return nullptr;
 }

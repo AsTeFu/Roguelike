@@ -5,10 +5,10 @@
 #ifndef INCLUDE_GAME_UTILITY_DTO_ENHANCEDTO_H_
 #define INCLUDE_GAME_UTILITY_DTO_ENHANCEDTO_H_
 
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/SpecialComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/LevelComponent.h>
 #include "game/Utility/DTO/ObjectDTO.h"
 
 class EnhanceDTO : public ObjectDTO {

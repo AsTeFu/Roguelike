@@ -6,7 +6,7 @@
 #define INCLUDE_GAME_SCENES_GAMESCENE_H_
 
 #include <game/Player/Special.h>
-#include <game/Utility/ConfigTerminal.h>
+#include <game/Utility/Config.h>
 #include "game/Scenes/SceneManager.h"
 #include "game/Windows/GameWindowsManager.h"
 
@@ -19,7 +19,7 @@ class GameScene : public Scene {
   GameScene(Context* context, SceneManager* sceneManager)
       : Scene(context, sceneManager),
         roomManager(sceneManager),
-        _windowsManager(ConfigTerminal::areaX, ConfigTerminal::areaY) {}
+        _windowsManager(Config::getInstance().area.getX(), Config::getInstance().area.getY()) {}
   void update(SceneManager* sceneManager) override;
   void start(SceneManager* sceneManager) override;
   void end(SceneManager* sceneManager) override;

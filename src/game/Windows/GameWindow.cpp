@@ -4,21 +4,21 @@
 
 #include "game/Windows/GameWindow.h"
 #include <game/RoomManager/RoomManager.h>
+#include <game/Scenes/SceneRenderUtility.h>
 
 void GameWindow::render(RoomManager* roomManager) const {
   configurateTerminal();
   roomManager->update();
 
-  terminal_color(_config.color);
-  verticalBorder();
-  // horizontalBorder();
-  horizontalLine(_config.position, _config.size);
+  Terminal::setColor(_config.color);
+  SceneRenderUtility::verticalBorder(_config.position, _config.size);
+  SceneRenderUtility::horizontalLine(_config.position, _config.size.getX());
 
-  terminal_print(_config.position.getX() + 5, _config.position.getY(), _config.name.c_str());
+  Terminal::print(_config.position.getX() + 5, _config.position.getY(), _config.name);
 }
 GameWindow::GameWindow(const WindowConfig& config) : BaseGameWindow(config) {
-  terminal_layer(_config.layer);
-  terminal_crop(_config.position.getX(), _config.position.getY(), _config.size.getX(), _config.size.getY());
+  Terminal::setLayer(_config.layer);
+  Terminal::crop(_config.position, _config.size);
 
   std::cout << "GameWindow (layer: " << _config.layer << "); Position: " << _config.position << "; Size "
             << _config.size << std::endl;

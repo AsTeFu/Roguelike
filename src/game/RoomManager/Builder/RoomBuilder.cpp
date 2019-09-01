@@ -3,40 +3,42 @@
 //
 
 #include "game/RoomManager/Builders/RoomBuilder.h"
+#include <utilities/Random.h>
 #include <game/Components/AIController.h>
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/ArmorComponent.h>
 #include <game/Components/AttackComponent.h>
-#include <game/Components/CameraComponent.h>
-#include <game/Components/ChestComponent.h>
-#include <game/Components/CoinItemComponent.h>
-#include <game/Components/Collider.h>
-#include <game/Components/ExitComponent.h>
-#include <game/Components/FoodItemComponent.h>
-#include <game/Components/Graphic.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/HealthItemComponent.h>
-#include <game/Components/InputKeyboard.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/Movement.h>
-#include <game/Components/NameComponent.h>
-#include <game/Components/PlayerComponent.h>
-#include <game/Components/PointComponent.h>
+#include <game/Components/BaseComponent/CameraComponent.h>
+#include <game/Components/BaseComponent/Collider.h>
+#include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Movement.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/BaseComponent/Trigger.h>
+#include <game/Components/BaseComponent/VisibleComponent.h>
+#include <game/Components/EnvironmentComponents/ChestComponent.h>
+#include <game/Components/EnvironmentComponents/ExitComponent.h>
+#include <game/Components/EnvironmentComponents/PointComponent.h>
+#include <game/Components/EnvironmentComponents/ShopComponent.h>
+#include <game/Components/EnvironmentComponents/WallComponent.h>
+#include <game/Components/ItemComponents/ArmorComponent.h>
+#include <game/Components/ItemComponents/CoinItemComponent.h>
+#include <game/Components/ItemComponents/FoodItemComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/HealthItemComponent.h>
+#include <game/Components/ItemComponents/InventoryComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/InputKeyboard.h>
+#include <game/Components/PlayerComponents/LevelComponent.h>
+#include <game/Components/PlayerComponents/NameComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
+#include <game/Components/PlayerComponents/StarvationComponent.h>
+#include <game/Components/PlayerComponents/StepsComponent.h>
+#include <game/Components/PlayerComponents/WalletComponent.h>
 #include <game/Components/PositionsComponent.h>
-#include <game/Components/ShopComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/StepsComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/Trigger.h>
-#include <game/Components/VisibleComponent.h>
-#include <game/Components/WallComponent.h>
-#include <game/Components/WalletComponent.h>
-#include <game/Components/WeaponComponent.h>
-#include <game/Utility/ConfigTerminal.h>
+#include <game/Items/FoodItem.h>
+#include <game/Items/MedkitItem.h>
+#include <game/Utility/Config.h>
 #include <game/Utility/DTO/NameDTO.h>
-#include <game/Utility/Random.h>
 #include <algorithm>
 #include <vector>
 #include "game/RoomManager/Room.h"
@@ -48,8 +50,6 @@ Room* RoomBuilder::build(StructureComponent* const structure, SceneManager* scen
   auto player = room->getEngine().getEntityManager()->createEntity("player");
 
   if (Room::countRoom == 1) startPlayer(player, sceneManager);
-  // else
-  //  transferPlayer(player, roomManager->getCurrentRoom());
 
   auto camera = room->getEngine().getEntityManager()->createEntity("camera");
   camera->addComponent<CameraComponent>();
@@ -60,43 +60,13 @@ Room* RoomBuilder::build(StructureComponent* const structure, SceneManager* scen
   for (int i = 0; i < structure->size.getX(); ++i) {
     for (int j = 0; j < structure->size.getY(); ++j) {
       if (structure->objects[i][j].graphic != '#')
-        _builds['.'](i, j, Tile('.', ConfigTerminal::disableColor), &room->getEngine());
+        _builds['.'](i, j, Tile('.', Config::getInstance().disableColor), &room->getEngine());
       _builds[structure->objects[i][j].graphic](i, j, structure->objects[i][j], &room->getEngine());
     }
   }
 
+  room->activateSystem();
   return room;
-}
-void RoomBuilder::transferPlayer(Entity* player, Room* currentRoom) const {
-  // auto playerDTO = currentRoom->getEngine().getEntityManager()->getByTag("player")[0];
-
-  // Entity::copyEntity(playerDTO, player);
-
-  // player->addComponent<NameComponent>(playerDTO->getComponent<NameComponent>()->name);
-  // player->addComponent<SpecialComponent>(playerDTO->getComponent<SpecialComponent>()->special);
-
-  // player->addComponent<WalletComponent>(playerDTO->getComponent<WalletComponent>()->cash);
-  // player->addComponent<HealthComponent>(playerDTO->getComponent<HealthComponent>()->health);
-  // player->addComponent<StarvationComponent>(playerDTO->getComponent<StarvationComponent>()->currentFood);
-  // player->addComponent<StepsComponent>(playerDTO->getComponent<StepsComponent>()->currentSteps);
-
-  // player->addComponent<LevelComponent>(100);
-  // *player->getComponent<LevelComponent>() = *playerDTO->getComponent<LevelComponent>();
-
-  // player->addComponent<AbilitiesComponent>();
-  // *player->getComponent<AbilitiesComponent>() = *playerDTO->getComponent<AbilitiesComponent>();
-
-  // player->addComponent<WeaponComponent>(playerDTO->getComponent<WeaponComponent>()->weapon.get());
-  // player->addComponent<ArmorComponent>(playerDTO->getComponent<ArmorComponent>()->getEquipments());
-  // player->addComponent<InventoryComponent>(playerDTO->getComponent<InventoryComponent>()->getItems(),
-  //                                         playerDTO->getComponent<InventoryComponent>()->maxItems);
-
-  // auto special = player->getComponent<SpecialComponent>();
-  // for (const auto& pair : player->getComponent<ArmorComponent>()->equipments) {
-  //   for (const auto& effect : pair.second->effects) {
-  //     special->addictiveSpecial.addPoints(effect.first, effect.second);
-  //   }
-  // }
 }
 void RoomBuilder::startPlayer(Entity* player, SceneManager* sceneManager) {
   player->addComponent<NameComponent>(sceneManager->getContext()->getObject<NameDTO>()->name);
@@ -208,14 +178,15 @@ void RoomBuilder::addEnemy(int x, int y, Tile tile, Engine* engine) {
   }
 }
 Special RoomBuilder::generateSpecialEnemy() const {
-  Special special(ConfigTerminal::minPointsSpecial, ConfigTerminal::maxPointsSpecial, ConfigTerminal::pointsSpecial);
-  special.addPoints(STRENGTH, Random::random(3, 10));
-  special.addPoints(ENDURANCE, Random::random(3, 10));
+  Special special(Config::getInstance().pointSpecialRange, Config::getInstance().maxPointsSpecial);
+  special.addPoints(STRENGTH, Random::random(3, 7));
+  special.addPoints(ENDURANCE, Random::random(3, 7));
+  special.addPoints(PERCEPTION, Random::random(3, 7));
 
-  int rnd = Random::random(std::max(5 + Room::countRoom * 2, ConfigTerminal::maxPointsSpecial - 1),
-                           std::max(15 + Room::countRoom * 2, ConfigTerminal::maxPointsSpecial));
+  int rnd = Random::random(std::max(5 + Room::countRoom * 2, Config::getInstance().maxPointsSpecial - 1),
+                           std::max(15 + Room::countRoom * 2, Config::getInstance().maxPointsSpecial));
 
-  for (int i = 0; i < rnd; i++) special.addPoint(ConfigTerminal::statsSpecial[Random::random(7)]);
+  for (int i = 0; i < rnd; i++) special.addPoint(Config::getInstance().statsSpecial[Random::random(7)]);
   return special;
 }
 void RoomBuilder::addChest(int x, int y, Tile tile, Engine* engine) {

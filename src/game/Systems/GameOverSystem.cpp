@@ -3,11 +3,11 @@
 //
 
 #include "game/Systems/GameOverSystem.h"
-#include <game/Components/ExitComponent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/PlayerComponent.h>
-#include <game/Components/Transform.h>
-#include <game/Components/Trigger.h>
+#include <game/Components/BaseComponent/Transform.h>
+#include <game/Components/BaseComponent/Trigger.h>
+#include <game/Components/EnvironmentComponents/ExitComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/PlayerComponents/PlayerComponent.h>
 #include "game/RoomManager/RoomManager.h"
 
 bool GameOverSystem::filter(Entity* entity) const {

@@ -1,16 +1,16 @@
 //
 // Created by AsTeFu on 27.08.2019.
 //
-#include <game/Components/AbilitiesComponent.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/InventoryComponent.h>
-#include <game/Components/LevelComponent.h>
-#include <game/Components/NameComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/StarvationComponent.h>
-#include <game/Components/StepsComponent.h>
-#include <game/Components/WalletComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/InventoryComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/LevelComponent.h>
+#include <game/Components/PlayerComponents/NameComponent.h>
+#include <game/Components/PlayerComponents/StarvationComponent.h>
+#include <game/Components/PlayerComponents/StepsComponent.h>
+#include <game/Components/PlayerComponents/WalletComponent.h>
 #include <game/ECSUtility.h>
 
 Entity* ECSUtility::copyPlayer(Entity* const fromPlayer, Entity* toPlayer) {
@@ -46,9 +46,9 @@ Entity* ECSUtility::transferPlayer(Entity* const fromPlayer, Entity* toPlayer) {
   // TODO(AsTeFu): abilities
   *toPlayer->getComponent<AbilitiesComponent>() = *fromPlayer->getComponent<AbilitiesComponent>();
 
-  *toPlayer->getComponent<WeaponComponent>()->weapon = *fromPlayer->getComponent<WeaponComponent>()->weapon;
+  toPlayer->getComponent<WeaponComponent>()->weapon.swap(fromPlayer->getComponent<WeaponComponent>()->weapon);
   toPlayer->getComponent<ArmorComponent>()->setEquipments(fromPlayer->getComponent<ArmorComponent>());
-  toPlayer->getComponent<InventoryComponent>()->setInventory(fromPlayer->getComponent<InventoryComponent>());
+  // toPlayer->getComponent<InventoryComponent>()->setInventory(fromPlayer->getComponent<InventoryComponent>());
 
   return toPlayer;
 }

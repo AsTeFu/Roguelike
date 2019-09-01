@@ -5,11 +5,11 @@
 #ifndef INCLUDE_GAME_SYSTEMS_POINTRENDERSYSTEM_H_
 #define INCLUDE_GAME_SYSTEMS_POINTRENDERSYSTEM_H_
 
+#include "Utilities/Vector2.h"
 #include "ecs/ISystem.h"
-#include "game/Components/Graphic.h"
-#include "game/Components/PointComponent.h"
-#include "game/Components/Transform.h"
-#include "game/Utility/Vector2.h"
+#include "game/Components/BaseComponent/Graphic.h"
+#include "game/Components/BaseComponent/Transform.h"
+#include "game/Components/EnvironmentComponents/PointComponent.h"
 
 class PointRenderSystem : public ISystem {
  private:

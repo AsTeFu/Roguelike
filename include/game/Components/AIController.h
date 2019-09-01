@@ -5,8 +5,8 @@
 #ifndef INCLUDE_GAME_COMPONENTS_AICONTROLLER_H_
 #define INCLUDE_GAME_COMPONENTS_AICONTROLLER_H_
 
+#include "Utilities/Vector2.h"
 #include "ecs/IComponent.h"
-#include "game/Utility/Vector2.h"
 
 class AIController : public IComponent {
  public:

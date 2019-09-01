@@ -5,8 +5,8 @@
 #ifndef INCLUDE_GAME_SYSTEMS_MOVEMENTSYSTEM_H_
 #define INCLUDE_GAME_SYSTEMS_MOVEMENTSYSTEM_H_
 
-#include <game/Components/Movement.h>
-#include <game/Components/Transform.h>
+#include <game/Components/BaseComponent/Movement.h>
+#include <game/Components/BaseComponent/Transform.h>
 #include "ecs/ISystem.h"
 
 class MovementSystem : public ISystem {

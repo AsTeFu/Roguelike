@@ -5,7 +5,7 @@
 #ifndef INCLUDE_GAME_SCENES_ABILITYSCENE_H_
 #define INCLUDE_GAME_SCENES_ABILITYSCENE_H_
 
-#include <game/Components/AbilitiesComponent.h>
+#include <game/Components/PlayerComponents/AbilitiesComponent.h>
 #include <game/Utility/DTO/EnhanceDTO.h>
 #include <string>
 #include <vector>

@@ -6,7 +6,7 @@
 
 #include <map>
 #include <string>
-#include "game/Utility/ConfigTerminal.h"
+#include "game/Utility/Config.h"
 
 bool Special::addPoint(const string& stat) {
   if (_stats[stat] == _maxValue || _currentPoints == 0) return false;
@@ -15,16 +15,17 @@ bool Special::addPoint(const string& stat) {
   return true;
 }
 bool Special::addPoint(StatSpecial stat) {
-  return addPoint(ConfigTerminal::statsSpecial[stat]);
+  return addPoint(Config::getInstance().statsSpecial[stat]);
 }
 Special::Special(int minValue, int maxValue, int startPoints)
     : _minValue(minValue), _maxValue(maxValue), _startPoints(startPoints), _currentPoints(startPoints) {
-  for (const auto& stat : ConfigTerminal::statsSpecial) {
+  for (const auto& stat : Config::getInstance().statsSpecial) {
     _stats[stat] = 0;
 
     for (int i = 0; i < minValue; i++) addPoint(stat);
   }
 }
+Special::Special(const Range& range, int startPoints) : Special(range.minValue, range.maxValue, startPoints) {}
 bool Special::removePoint(const string& stat) {
   if (_stats[stat] == _minValue) return false;
   _stats[stat]--;
@@ -41,7 +42,7 @@ int Special::countPoints() const {
   return _currentPoints;
 }
 int Special::getValue(StatSpecial stat) const {
-  return _stats.at(ConfigTerminal::statsSpecial[stat]);
+  return _stats.at(Config::getInstance().statsSpecial[stat]);
 }
 const map<string, int>& Special::getStats() const {
   return _stats;
@@ -67,8 +68,18 @@ int Special::addPoints(const string& stat, int points) {
   return 0;
 }
 int Special::addPoints(StatSpecial stat, int points) {
-  for (int i = 0; i < points; i++) {
+  for (int i = 0; i < points; i++)
     if (!addPoint(stat)) return points - i;
-  }
   return 0;
+}
+int Special::removePoints(const string& stat, int points) {
+  for (int i = 0; i < points; ++i)
+    if (!removePoint(stat)) return points - i;
+  return 0;
+}
+void Special::addPoints(const std::map<std::string, int>& effects) {
+  for (const auto& effect : effects) addPoints(effect.first, effect.second);
+}
+void Special::removePoints(const std::map<std::string, int>& effects) {
+  for (const auto& effect : effects) removePoints(effect.first, effect.second);
 }

@@ -3,11 +3,11 @@
 //
 
 #include "game/Systems/CollisionSystem.h"
-#include <game/Components/Collider.h>
-#include <game/Components/WallComponent.h>
+#include <game/Components/BaseComponent/Collider.h>
+#include <game/Components/EnvironmentComponents/WallComponent.h>
 #include "ecs/EntityManager.h"
-#include "game/Components/Transform.h"
-#include "game/Components/Trigger.h"
+#include "game/Components/BaseComponent/Transform.h"
+#include "game/Components/BaseComponent/Trigger.h"
 
 void CollisionSystem::preUpdate(Entity* entity) {
   entity->getComponent<Collider>()->colls.clear();

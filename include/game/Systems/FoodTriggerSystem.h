@@ -5,8 +5,8 @@
 #ifndef INCLUDE_GAME_SYSTEMS_FOODTRIGGERSYSTEM_H_
 #define INCLUDE_GAME_SYSTEMS_FOODTRIGGERSYSTEM_H_
 
-#include <game/Components/FoodItemComponent.h>
-#include <game/Components/Trigger.h>
+#include <game/Components/BaseComponent/Trigger.h>
+#include <game/Components/ItemComponents/FoodItemComponent.h>
 #include "ecs/ISystem.h"
 
 class FoodTriggerSystem : public ISystem {

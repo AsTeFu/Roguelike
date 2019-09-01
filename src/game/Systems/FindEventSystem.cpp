@@ -4,13 +4,13 @@
 
 #include "game/Systems/FindEventSystem.h"
 #include <game/Components/AIController.h>
-#include <game/Components/ChestComponent.h>
-#include <game/Components/Graphic.h>
-#include <game/Components/HealthComponent.h>
-#include <game/Components/ShopComponent.h>
-#include <game/Components/SpecialComponent.h>
-#include <game/Components/VisibleComponent.h>
-#include <game/Components/WeaponComponent.h>
+#include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/VisibleComponent.h>
+#include <game/Components/EnvironmentComponents/ChestComponent.h>
+#include <game/Components/EnvironmentComponents/ShopComponent.h>
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/ItemComponents/SpecialComponent.h>
+#include <game/Components/ItemComponents/WeaponComponent.h>
 #include <game/Logs/GameLogger.h>
 
 bool FindEventSystem::filter(Entity* entity) const {

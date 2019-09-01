@@ -6,13 +6,11 @@
 #include <game/Logs/GameLogger.h>
 void LogWindow::render() const {
   configurateTerminal();
-  terminal_clear_area(_config.position.getX(), _config.position.getY(), _config.size.getX(), _config.size.getY());
+  Terminal::clearArea(_config.position, _config.size);
 
   GameLogger::getInstance().render(_config.position.getY() + 2);
 
-  verticalBorder();
-  horizontalBorder();
-  terminal_print(_config.position.getX() + 4, _config.position.getY(), _config.name.c_str());
+  Terminal::print(_config.position.getX() + 4, _config.position.getY(), _config.name);
 }
 LogWindow::LogWindow(const WindowConfig& config) : BaseGameWindow(config) {
   // terminal_layer(_config.layer);

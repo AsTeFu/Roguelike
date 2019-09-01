@@ -30,8 +30,7 @@ class SystemManager {
   template<typename System, typename... Args>
   SystemManager *addSystem(Args &&... args) {
     // _systems.emplace(typeid(System), std::make_unique<System>(_entityManager, this, std::forward<Args>(args)...));
-    _systems.emplace_back(
-        std::make_unique<System>(_entityManager, this, _sceneManager, std::forward<Args>(args)...));
+    _systems.emplace_back(std::make_unique<System>(_entityManager, this, _sceneManager, std::forward<Args>(args)...));
     return this;
   }
 
