@@ -28,7 +28,7 @@ void RoomManager::addSpecial(const SpecialDTO& special) {
   _currentRoom->addSpecial(special);
 }
 Room* RoomManager::getNewRoom() {
-  return _builder.build(_roomsPatterns[Random::random(_roomsPatterns.size())].get(), sceneManager, this);
+  return _builder.build(_roomsPatterns[Random::random(_roomsPatterns.sizeShop())].get(), sceneManager, this);
 }
 
 void RoomManager::addName(const std::string& name) {
@@ -74,13 +74,20 @@ Entity* RoomManager::getCurrentPlayer() const {
 }
 void RoomManager::start() {
   if (Room::countRoom == 0) {
-    auto rooms = Utility::readNames("Resource/Rooms");
-    for (const auto& name : rooms) {
-      _roomsPatterns.emplace_back(std::unique_ptr<StructureComponent>(FileUtility::readRoom("Resource/Rooms/" + name)));
+    auto roomsNames = Utility::readDirection("Resource\\Rooms");
+    for (const auto& name : roomsNames) {
+      _roomsPatterns.emplace_back(
+          std::unique_ptr<StructureComponent>(FileUtility::readRoom("Resource\\Rooms\\" + name)));
     }
-    // _rooms[Room::countRoom] = unique_ptr<Room>(_builder.build(_roomsPatterns[0].get(), sceneManager, this));
-    // _currentRoom = _rooms[Room::countRoom].get();
+
     createRoom();
-    // _currentRoom->activateSystem();
+    EntityManager* entityManager = _rooms[1]->getEngine().getEntityManager();
+    SystemManager* systemManager = _rooms[1]->getEngine().getSystemManager();
+    for (const auto& exit : entityManager->getByTag("<")) {
+      size_t idExit = exit->getID();
+      entityManager->deleteEntity(idExit);
+      systemManager->deleteEntity(idExit);
+    }
+    systemManager->setComponents();
   }
 }

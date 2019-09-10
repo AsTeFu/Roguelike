@@ -99,7 +99,7 @@ KeyCode KeyCode::KP_9(0x61);
 KeyCode KeyCode::KP_0(0x62);
 KeyCode KeyCode::KP_PERIOD(0x63);
 KeyCode KeyCode::SHIFT(0x70);
-KeyCode KeyCode::CONTROL(0x71);
+KeyCode KeyCode::CTRL(0x71);
 KeyCode KeyCode::ALT(0x72);
 KeyCode KeyCode::Close(0xE0);
 

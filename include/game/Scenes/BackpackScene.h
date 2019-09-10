@@ -24,10 +24,10 @@ class BackpackScene : public Scene {
   Vector2 positionSpecial;
   Vector2 sizeSpecial;
 
-  void decrease();
-  void increase();
-  void equipMenu(SceneManager* sceneManager);
-  void deleteMenu(SceneManager* sceneManager);
+  void downward();
+  void upward();
+  void equipMenu();
+  void deleteMenu();
 
   void renderCursor(int x, int y) const;
   int renderWeapon(int x, int y) const;
@@ -40,13 +40,14 @@ class BackpackScene : public Scene {
   void renderInventory() const;
   void renderSpecial() const;
 
+  bool isInventory() const;
+  int getInventoryItemIndex() const;
+
  public:
   BackpackScene(Context* const context, SceneManager* sceneManager);
   void start(SceneManager* sceneManager) override;
   void update(SceneManager* sceneManager) override;
   void render() override;
-  bool isInventory() const;
-  int getInventoryItemIndex() const;
 };
 
 #endif  // INCLUDE_GAME_SCENES_BACKPACKSCENE_H_

@@ -61,10 +61,12 @@ class Config {
 
   Vector2 positionChestScene;
   Vector2 sizeChestScene;
+  Vector2 roomSize;
 
   Color disableColor;
 
   Range experienceRange;
+  void readRoomSize(const std::string& str);
 };
 
 #endif  // INCLUDE_GAME_UTILITY_CONFIG_H_

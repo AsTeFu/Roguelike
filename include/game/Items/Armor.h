@@ -5,6 +5,7 @@
 #ifndef INCLUDE_GAME_ITEMS_ARMOR_H_
 #define INCLUDE_GAME_ITEMS_ARMOR_H_
 
+#include <game/Components/ItemComponents/InventoryComponent.h>
 #include <game/Components/ItemComponents/SpecialComponent.h>
 #include <game/Utility/Config.h>
 #include <map>
@@ -28,6 +29,7 @@ class Armor : public InventoryItem {
   void equipItem(Entity* player, ChestComponent* chestComponent, int index) override;
   void takeItem(Entity* player) override;
   void equipItem(Entity* player, int indexItem) override;
+  void addItemToInventory(InventoryComponent* player) override;
   std::string getSlotName() const;
 };
 

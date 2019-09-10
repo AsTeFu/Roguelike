@@ -46,13 +46,6 @@ class ArmorComponent : public IComponent {
     return protect;
   }
 
-  std::vector<Armor*> getEquipments() {
-    std::vector<Armor*> armors;
-    for (const auto& armor : equipments) {
-      armors.push_back(armor.second.get());
-    }
-    return armors;
-  }
   void setEquipments(ArmorComponent* armorEquipments) {
     for (auto& equipment : armorEquipments->equipments) {
       equipments[equipment.first].swap(equipment.second);

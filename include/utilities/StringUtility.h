@@ -11,6 +11,11 @@
 #include <vector>
 
 class StringUtility {
+ private:
+  static bool range(int symbol, int min, int max) {
+    return (symbol >= min && symbol <= max);
+  }
+
  public:
   static std::vector<std::string> split(const std::string& str, char reg) {
     std::stringstream ss(str);
@@ -49,6 +54,10 @@ class StringUtility {
     std::string tmp;
     for (const auto& symbol : str) tmp.push_back(toupper(symbol));
     return tmp;
+  }
+
+  static bool isAvailableSymbol(int symbol) {
+    return range(symbol, 'A', 'Z') || range(symbol, 'a', 'z') || range(symbol, '0', '9');
   }
 };
 

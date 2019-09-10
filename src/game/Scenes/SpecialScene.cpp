@@ -28,10 +28,10 @@ SpecialScene::SpecialScene(Context* context, SceneManager* sceneManager)
   sizeLabel = {Config::getInstance().sizeTerminal.getX() - leftMargin * 4, 4};
 
   positionStats = {leftMargin * 3, sizeLabel.getY() + topMargin * 2};
-  sizeStats = {40, 20};
+  sizeStats = {40, 21};
 
   positionDescription = {positionStats.getX() + sizeStats.getX() + leftMargin, positionStats.getY()};
-  sizeDescription = {Config::getInstance().sizeTerminal.getX() - sizeStats.getX() - leftMargin * 7, 20};
+  sizeDescription = {Config::getInstance().sizeTerminal.getX() - sizeStats.getX() - leftMargin * 7, 21};
 }
 void SpecialScene::increaseCurrentStat() {
   _special.addPoint(Config::getInstance().statsSpecial[_currentPos]);
@@ -86,7 +86,7 @@ int SpecialScene::renderStat(int x, int y) const {
   for (const auto& stat : Config::getInstance().statsSpecial) y = drawStat(x, y, stat);
 
   y += 5;
-  SceneRenderUtility::drawHeader(leftMargin * 3, y - 3, Config::getInstance().sizeTerminal.getX() - leftMargin * 6, 4,
+  SceneRenderUtility::drawHeader(leftMargin * 3, y, Config::getInstance().sizeTerminal.getX() - leftMargin * 6, 4,
                                  "Распредели все очки и нажми Enter");
   return y;
 }

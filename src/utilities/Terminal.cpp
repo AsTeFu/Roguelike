@@ -3,6 +3,7 @@
 //
 
 #include <BearLibTerminal.h>
+#include <utilities/StringUtility.h>
 #include <utilities/Terminal.h>
 #include <string>
 
@@ -46,8 +47,11 @@ void Terminal::clear() {
   terminal_clear();
 }
 Color Terminal::pickColor(int x, int y, int index) {
+  // TODO(ATF): ок, это не работает, я не понял
   color_t colort = terminal_pick_color(x, y, index);
   int a, r, g, b;
+
+  if (colort == 0) return Color(0, 0, 0, 0);
 
   a = colort >> 6;
 
@@ -89,7 +93,7 @@ std::string Terminal::readString(int x, int y, int max) {
       str.resize(str.length() - 1);
     } else if (terminal_check(TK_CHAR) && static_cast<int>(str.length()) < max) {
       int symbol = terminal_state(TK_CHAR);
-      if ((symbol >= 'A' && symbol <= 'Z') || (symbol >= 'a' && symbol <= 'z')) str.push_back(terminal_state(TK_CHAR));
+      if (StringUtility::isAvailableSymbol(symbol)) str.push_back(terminal_state(TK_CHAR));
     }
 
     clearArea(x, y, max + 1, 1);
@@ -99,6 +103,20 @@ std::string Terminal::readString(int x, int y, int max) {
 
   return str;
 }
+
 std::string Terminal::readString(const Vector2& position, int max) {
   return readString(position.getX(), position.getY(), max);
+}
+Color Terminal::pickColor(const Vector2& position, int index) {
+  return pickColor(position.getX(), position.getY(), index);
+}
+void Terminal::enableMouse() {
+  terminal_set("input.mouse-cursor = true");
+}
+void Terminal::put(const Vector2& position, const Tile& tile) {
+  put(position.getX(), position.getY(), tile);
+}
+void Terminal::put(int x, int y, const Tile& tile) {
+  setColor(tile.color);
+  put(x, y, tile.graphic);
 }

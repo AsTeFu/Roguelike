@@ -9,3 +9,4 @@ rarityChances: 50, 30, 12, 5, 2, 1
 maxItemsChest: 4
 disableColor: 255, 40, 40, 40
 experienceRange: 30, 45
+roomSize: 41, 21

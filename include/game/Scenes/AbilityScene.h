@@ -11,6 +11,8 @@
 #include <vector>
 #include "game/Scenes/SceneManager.h"
 
+// TODO(ATF): устаревший код
+
 enum Side { LeftSide, RightSide };
 
 class AbilityScene : public Scene {
@@ -30,7 +32,6 @@ class AbilityScene : public Scene {
   void update(SceneManager *sceneManager) override;
   void render() override;
   void start(SceneManager *sceneManager) override;
-  std::vector<string> split(const string &s, char regex);
 };
 
 #endif  // INCLUDE_GAME_SCENES_ABILITYSCENE_H_

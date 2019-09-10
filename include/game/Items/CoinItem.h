@@ -13,7 +13,7 @@
 
 class CoinItem : public InventoryItem {
  public:
-  explicit CoinItem(int cost) : InventoryItem(CoinType, "Coin", Usual, cost) {}
+  explicit CoinItem(int cost) : InventoryItem("Coin", Usual, cost) {}
   void printItem(int x, int y) const override {
     Terminal::printf(x, y, "[color=yellow]%s:[/color] %d", name.c_str(), cost);
   }

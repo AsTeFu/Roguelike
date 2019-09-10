@@ -13,7 +13,7 @@
 
 class Utility {
  public:
-  static std::vector<std::string> readNames(const std::string& path) {
+  static std::vector<std::string> readDirection(const std::string& path) {
     std::vector<std::string> _names;
     DIR* dir = opendir(path.c_str());
 

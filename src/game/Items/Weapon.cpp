@@ -35,3 +35,6 @@ void Weapon::takeItem(Entity* player) {
   auto* weapon = new Weapon(*this);
   player->getComponent<InventoryComponent>()->items.push_back(std::unique_ptr<Weapon>(weapon));
 }
+void Weapon::addItemToInventory(InventoryComponent* inventory) {
+  inventory->addItem<Weapon>(new Weapon(*this));
+}

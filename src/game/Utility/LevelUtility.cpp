@@ -2,7 +2,7 @@
 // Created by AsTeFu on 30.08.2019.
 //
 
-#include <Utilities/Random.h>
+#include <utilities/Random.h>
 #include <game/Components/ItemComponents/SpecialComponent.h>
 #include <game/Components/PlayerComponents/AbilitiesComponent.h>
 #include <game/Utility/Config.h>
@@ -19,5 +19,5 @@ void LevelUtility::levelUp(const Entity* player, LevelComponent* level) {
   level->levelUp();
   player->getComponent<SpecialComponent>()->special.addAvailablePoint();
   player->getComponent<AbilitiesComponent>()->available++;
-  GameLogger::getInstance().add("[color=Sublime]Level UpArrow!");
+  GameLogger::getInstance().add("[color=Sublime]Level Up!");
 }

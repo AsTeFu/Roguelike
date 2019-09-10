@@ -5,7 +5,7 @@
 #ifndef INCLUDE_GAME_COMPONENTS_PLAYERCOMPONENTS_LEVELCOMPONENT_H_
 #define INCLUDE_GAME_COMPONENTS_PLAYERCOMPONENTS_LEVELCOMPONENT_H_
 
-#include <Utilities/Random.h>
+#include <utilities/Random.h>
 #include <game/Logs/GameLogger.h>
 #include <game/Utility/Config.h>
 #include "ecs/IComponent.h"

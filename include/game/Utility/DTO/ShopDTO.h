@@ -17,25 +17,14 @@
 class ShopDTO : public ObjectDTO {
  public:
   ShopComponent* shopComponent;
-  WeaponComponent* weaponComponent;
-  ArmorComponent* armorComponent;
-  WalletComponent* walletComponent;
-  StarvationComponent* starvationComponent;
-  HealthComponent* healthComponent;
-  InventoryComponent* inventoryComponent;
-  SpecialComponent* specialComponent;
+  Entity* player;
 
-  ShopDTO(ShopComponent* shopComponent, WeaponComponent* weaponComponent, ArmorComponent* armorComponent,
-          WalletComponent* walletComponent, StarvationComponent* starvationComponent, HealthComponent* healthComponent,
-          InventoryComponent* inventoryComponent, SpecialComponent* specialComponent)
-      : shopComponent(shopComponent),
-        weaponComponent(weaponComponent),
-        armorComponent(armorComponent),
-        walletComponent(walletComponent),
-        starvationComponent(starvationComponent),
-        healthComponent(healthComponent),
-        inventoryComponent(inventoryComponent),
-        specialComponent(specialComponent) {}
+  ShopDTO(ShopComponent* shopComponent, Entity* player) : shopComponent(shopComponent), player(player) {}
+
+  template<typename Component>
+  Component* getComponent() {
+    return player->getComponent<Component>();
+  }
 };
 
 #endif  // INCLUDE_GAME_UTILITY_DTO_SHOPDTO_H_

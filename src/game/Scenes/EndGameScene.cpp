@@ -3,7 +3,11 @@
 //
 
 #include "game/Scenes/EndGameScene.h"
+#include <game/Components/ItemComponents/HealthComponent.h>
+#include <game/Components/PlayerComponents/NameComponent.h>
+#include <game/Components/PlayerComponents/StepsComponent.h>
 #include <game/RoomManager/Room.h>
+#include <game/Scenes/SceneRenderUtility.h>
 #include <utilities/Terminal.h>
 #include <algorithm>
 #include <fstream>
@@ -12,60 +16,44 @@
 #include "game/Utility/Input.h"
 
 void EndGameScene::render() {
-  Vector2 size(Config::getInstance().sizeTerminal.getX() - 20, 4);
-  Vector2 position(10, 3);
+  Vector2 position(20, 5);
+  Vector2 size(100, 20);
 
-  /*
-  Terminal::setLayer(12);
-  // terminal_clear();
-  // terminal_color(color_from_argb(255, 255, 255, 255));
+  Terminal::setLayer(0);
+  Terminal::clearArea(position, size);
+  Terminal::setLayer(1);
+  Terminal::clearArea(position, size);
+  Terminal::setLayer(2);
+  Terminal::clearArea(position, size);
 
-  // drawHeader(position, size, "THE END");
+  Terminal::setLayer(5);
+  Terminal::setColor(Color::Red);
+  SceneRenderUtility::drawBorder(position, size);
 
-  int offsetX = position.getX() + 3;
-  int offsetY = position.getY() + size.getY() + 2;
+  int x = position.getX() + 5;
+  int y = position.getY() + 2;
 
-  // terminal_printf(offsetX, offsetY++, "Rooms:        %d", Room::countRoom);
-  offsetY += 1;
+  Terminal::setColor(Color::White);
+  Terminal::printf(x, y++, "Rooms:        %d", Room::countRoom);
+  y += 1;
 
-  // terminal_printf(offsetX, offsetY++, "Name:         %s", player->name.c_str());
-  // terminal_printf(offsetX, offsetY++, "Cash:         %d", player->cash);
-  // terminal_printf(offsetX, offsetY++, "Food left:    %d", player->food);
-  // terminal_printf(offsetX, offsetY++, "Steps:        %d", player->steps);
-  // terminal_printf(offsetX, offsetY++, "Health:       %d", player->health);
+  Terminal::printf(x, y++, "Name:         %s", player->getComponent<NameComponent>()->name.c_str());
+  Terminal::printf(x, y++, "Cash:         %d", player->getComponent<WalletComponent>()->cash);
+  Terminal::printf(x, y++, "Food left:    %d", player->getComponent<StarvationComponent>()->currentFood);
+  Terminal::printf(x, y++, "Steps:        %d", player->getComponent<StepsComponent>()->currentSteps);
+  Terminal::printf(x, y++, "Health:       %d", player->getComponent<HealthComponent>()->health);
 
-  int score = player->cash * player->food - player->steps;
+  int score = player->getComponent<WalletComponent>()->cash + player->getComponent<StarvationComponent>()->currentFood -
+              player->getComponent<StepsComponent>()->currentSteps;
   if (score < 0) score = 0;
 
-  int pos = 0;
-  for (const auto& score1 : scores) {
-    if (score1.value == score && player->name == score1.key) break;
-    pos++;
-  }
-
-  offsetY++;
-  // terminal_printf(offsetX, position.getY() + offsetY++, "Your score (%d): %d", pos + 1, score);
-
-  offsetY += 5;
-
-  // drawHeader({position.getX(), offsetY}, size, "TABLE SCORE");
-
-  offsetY += 2;
-
-  int i = 0;
-  for (const auto& item : scores) {
-    // terminal_printf(offsetX, position.getY() + offsetY++, "%d. %s: %d", i + 1, item.key.c_str(), item.value);
-
-    i++;
-    if (i == 10) break;
-  } */
+  Terminal::printf(x, y++, "Score:        %d", score);
 }
 void EndGameScene::update(SceneManager* sceneManager) {
-  // if (Input::getKey(TK_ENTER) || Input::getKey(TK_SPACE) || Input::getKey(TK_ESCAPE)) {
-    // terminal_clear();
-    // terminal_close();
-    // sceneManager->switchScene("Menu");
-  // }
+  if (Input::getKeyDown(KeyCode::Enter) || Input::getKeyDown(KeyCode::Space) || Input::getKeyDown(KeyCode::Escape)) {
+    Terminal::clear();
+    Terminal::close();
+  }
 }
 EndGameScene::EndGameScene(Context* const context, SceneManager* sceneManager) : Scene(context, sceneManager) {}
 void EndGameScene::start(SceneManager* sceneManager) {
@@ -73,9 +61,9 @@ void EndGameScene::start(SceneManager* sceneManager) {
 
   // read();
 
-  int value = player->cash * player->food - player->steps;
-  scores.emplace_back(player->name, value);
-  std::sort(scores.begin(), scores.end(), [](const Score& lhs, const Score& rhs) { return lhs > rhs; });
+  // int value = player->cash * player->food - player->steps;
+  // scores.emplace_back(player->name, value);
+  // std::sort(scores.begin(), scores.end(), [](const Score& lhs, const Score& rhs) { return lhs > rhs; });
 
   // write();
 }
@@ -101,7 +89,7 @@ void EndGameScene::read() {
   std::ifstream file(path);
 
   if (file.is_open()) {
-    std::cout << "File scores opens for readNames" << std::endl;
+    std::cout << "File scores opens for readDirection" << std::endl;
 
     std::string key;
     int value;

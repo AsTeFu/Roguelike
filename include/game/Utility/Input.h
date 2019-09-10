@@ -8,13 +8,12 @@
 #include <utilities/KeyCode.h>
 #include <map>
 #include <vector>
-#include "Utilities/Vector2.h"
+#include "utilities/Vector2.h"
 
 class Input {
  private:
   // static std::vector<bool> keys;
   static std::map<int, bool> keys;
-  static std::map<int, bool> getEmptyKeys();
 
  public:
   static bool getKey(const KeyCode& code);
@@ -25,7 +24,11 @@ class Input {
   static bool hasInput();
   static int read();
   static bool mouseRight();
-  bool getKeyUp(const KeyCode& button);
+  static bool getKeyUp(const KeyCode& button);
+  static bool check(const KeyCode& button);
+  static bool isMouseWheel();
+  static int getMouseWheel();
+  static Vector2 getMousePosition();
 };
 
 #endif  // INCLUDE_GAME_UTILITY_INPUT_H_

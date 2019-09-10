@@ -3,7 +3,6 @@
 //
 
 #include "game/RoomManager/Builders/RoomBuilder.h"
-#include <utilities/Random.h>
 #include <game/Components/AIController.h>
 #include <game/Components/AttackComponent.h>
 #include <game/Components/BaseComponent/CameraComponent.h>
@@ -39,6 +38,7 @@
 #include <game/Items/MedkitItem.h>
 #include <game/Utility/Config.h>
 #include <game/Utility/DTO/NameDTO.h>
+#include <utilities/Random.h>
 #include <algorithm>
 #include <vector>
 #include "game/RoomManager/Room.h"
@@ -87,6 +87,10 @@ void RoomBuilder::startPlayer(Entity* player, SceneManager* sceneManager) {
 
   player->addComponent<WeaponComponent>(_generator.generateWeapon(Rare));
   player->addComponent<ArmorComponent>(_generator.generateEquipmnets(Usual, Rare));
+
+  Special* specialPlayer = &player->getComponent<SpecialComponent>()->addictiveSpecial;
+  for (const auto& armor : player->getComponent<ArmorComponent>()->equipments)
+    for (const auto& effect : armor.second->effects) specialPlayer->addPoints(effect.first, effect.second);
 
   player->addComponent<InventoryComponent>(special.getValue(STRENGTH) / 2 + 2);
 }

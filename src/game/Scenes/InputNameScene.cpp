@@ -20,13 +20,16 @@ void InputNameScene::start(SceneManager *sceneManager) {
   Input::read();
   render();
 
-  name = Terminal::readString(positionInput, rangeLen.maxValue);
-  StringUtility::trim(&name);
-  if (static_cast<int>(name.size()) >= rangeLen.minValue) {
-    Terminal::clear();
-    sceneManager->getContext()->addObject<NameDTO>(name);
-    sceneManager->switchScene(specialScene);
-  }
+  // TODO(ATF): переделать цикл
+  do {
+    name = Terminal::readString(positionInput, rangeLen.maxValue);
+    StringUtility::trim(&name);
+    if (static_cast<int>(name.size()) >= rangeLen.minValue) {
+      Terminal::clear();
+      sceneManager->getContext()->addObject<NameDTO>(name);
+      sceneManager->switchScene(specialScene);
+    }
+  } while (static_cast<int>(name.size()) < rangeLen.minValue);
 }
 
 void InputNameScene::update(SceneManager *sceneManager) {}
@@ -37,7 +40,7 @@ void InputNameScene::render() {
   int y = positionLabel.getY() + topMargin + sizeLabel.getY();
 
   Terminal::print(x, y++, "Input your name: ");
-  Terminal::print(x, y, "Больше " + std::to_string(rangeLen.minValue) + " букв!");
+  Terminal::print(x, y, "Больше " + std::to_string(rangeLen.minValue) + " букв! [[A-Z]][[a-z]][[0-9]]");
   drawPica();
 }
 void InputNameScene::drawPica() const {

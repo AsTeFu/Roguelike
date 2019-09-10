@@ -13,65 +13,95 @@
 #include <game/Utility/Config.h>
 #include <game/Utility/DTO/PlayerDTO.h>
 #include <string>
+
+InventoryWindow::InventoryWindow(const WindowConfig& config) : BaseGameWindow(config) {
+  Terminal::setLayer(_config.layer);
+  Terminal::crop(_config.position, _config.size);
+  std::cout << "Inv (layer: " << _config.layer << "); Position: " << _config.position << "; Size " << _config.size
+            << std::endl;
+}
+
 void InventoryWindow::render(Entity* const player) const {
   configurateTerminal();
 
-  int leftIndent = 5;
-  int topIndent = 2;
-  int offsetX = _config.position.getX() + leftIndent;
-  int offsetY = _config.position.getY() + topIndent;
+  int x = _config.position.getX() + leftMargin;
+  int y = _config.position.getY() + topMargin;
 
-  Terminal::printf(offsetX, offsetY++, "Rooms:   %d", Room::countRoom);
-  offsetY += 1;
+  Terminal::printf(x, y, "Rooms:   %d", Room::countRoom);
+  y += 2;
 
-  Terminal::printf(offsetX, offsetY++, "Name:    %s", player->getComponent<NameComponent>()->name.c_str());
-  Terminal::printf(offsetX, offsetY++, "Health:  [color=red]%d", player->getComponent<HealthComponent>()->health);
-  Terminal::printf(offsetX, offsetY++, "Cash:    [color=yellow]%d", player->getComponent<WalletComponent>()->cash);
-  Terminal::printf(offsetX, offsetY++, "Food:    [color=green]%d",
-                   player->getComponent<StarvationComponent>()->currentFood);
-  Terminal::printf(offsetX, offsetY++, "Steps:   %d", player->getComponent<StepsComponent>()->currentSteps);
+  y = drawPlayerStats(player, x, y) + 1;
+  y = drawPlayerLevel(player, x, y) + 1;
 
-  offsetY += 1;
-  Terminal::printf(offsetX, offsetY++, "Level:   %d", player->getComponent<LevelComponent>()->currentLevel);
-  Terminal::printf(offsetX, offsetY++, "Experience:   %d/%d", player->getComponent<LevelComponent>()->currentExperience,
-                   player->getComponent<LevelComponent>()->maxExperience);
+  SceneRenderUtility::horizontalLine(x - leftMargin, y, _config.size.getX());
+  Terminal::print(x, y, "EQUIPMENTS");
 
-  offsetY += 1;
-  SceneRenderUtility::horizontalLine(offsetX - leftIndent, offsetY, _config.size.getX());
-  Terminal::print(offsetX, offsetY, "EQUIPMENTS");
+  y += 2;
+  Terminal::print(x, y++, "EQUIPMENT STATS");
+  y = drawEquipmentStats(player, x, y);
+  y = drawPlayerEquipments(player, x, y);
 
-  offsetY += 2;
+  SceneRenderUtility::drawBorder(_config.position, _config.size);
+  Terminal::printf(x, _config.position.getY(), _config.name.c_str());
+}
 
-  Terminal::print(offsetX, offsetY++, "EQUIPMENT STATS");
+int InventoryWindow::drawPlayerStats(const Entity* player, int x, int y) const {
+  Terminal::printf(x, y++, "Name:    %s", getName(player).c_str());
+  Terminal::printf(x, y++, "Health:  [color=red]%d", getHealth(player));
+  Terminal::printf(x, y++, "Cash:    [color=yellow]%d", getCash(player));
+  Terminal::printf(x, y++, "Food:    [color=green]%d", getFood(player));
+  Terminal::printf(x, y++, "Steps:   %d", getSteps(player));
+  return y;
+}
+int InventoryWindow::drawPlayerLevel(const Entity* player, int x, int y) const {
+  Terminal::printf(x, y++, "Level:   %d", getLevel(player));
+  Terminal::printf(x, y++, "Experience:   %d/%d", getExperience(player), getMaxExperience(player));
+  return y;
+}
 
-  int damage = player->getComponent<WeaponComponent>()->weapon->damage;
-  // if (dto.abilities->hasAbility("Кровавая баня")) damage = static_cast<int>(120 * damage / 100.0);
+int InventoryWindow::getSteps(const Entity* player) const {
+  return player->getComponent<StepsComponent>()->currentSteps;
+}
+int InventoryWindow::getFood(const Entity* player) const {
+  return player->getComponent<StarvationComponent>()->currentFood;
+}
+int InventoryWindow::getCash(const Entity* player) const {
+  return player->getComponent<WalletComponent>()->cash;
+}
+int InventoryWindow::getHealth(const Entity* player) const {
+  return player->getComponent<HealthComponent>()->health;
+}
+string& InventoryWindow::getName(const Entity* player) const {
+  return player->getComponent<NameComponent>()->name;
+}
 
+int InventoryWindow::getMaxExperience(const Entity* player) const {
+  return player->getComponent<LevelComponent>()->maxExperience;
+}
+int InventoryWindow::getExperience(const Entity* player) const {
+  return player->getComponent<LevelComponent>()->currentExperience;
+}
+int InventoryWindow::getLevel(const Entity* player) const {
+  return player->getComponent<LevelComponent>()->currentLevel;
+}
+
+int InventoryWindow::drawEquipmentStats(const Entity* player, int x, int y) const {
+  auto weapon = player->getComponent<WeaponComponent>()->weapon.get();
   auto special = player->getComponent<SpecialComponent>();
 
-  Terminal::printf(offsetX, offsetY++, "Average damage:  [color=red]%d", damage + special->getValue(STRENGTH) * 2);
-  Terminal::printf(offsetX, offsetY++, "Average protect: [color=dark blue]%d",
+  Terminal::printf(x, y++, "Average damage:  [color=red]%d", weapon->damage + special->getValue(STRENGTH) * 2);
+  Terminal::printf(x, y++, "Average protect: [color=dark blue]%d",
                    player->getComponent<ArmorComponent>()->getProtect() + special->getValue(ENDURANCE) * 2);
-  offsetY++;
 
-  int critical = player->getComponent<WeaponComponent>()->weapon->chanceCritical;
-  // if (dto.abilities->hasAbility("Точность")) critical += 15;
-  Terminal::printf(offsetX, offsetY++, "Critical chance: %d", critical);
-  Terminal::printf(offsetX, offsetY++, "Chance dodge:    %d", player->getComponent<ArmorComponent>()->getDodge());
-  offsetY++;
+  y += 1;
 
-  Terminal::print(offsetX, offsetY++, "EQUIPMENTS");
-  player->getComponent<WeaponComponent>()->weapon->printItem(offsetX, offsetY++);
-  for (const auto& pair : player->getComponent<ArmorComponent>()->equipments) {
-    pair.second->printItem(offsetX, offsetY++);
-  }
-  offsetY += 4;
-
-  Terminal::printf(offsetX, _config.position.getY(), _config.name.c_str());
+  Terminal::printf(x, y++, "Critical chance: %d", weapon->chanceCritical);
+  Terminal::printf(x, y++, "Chance dodge:    %d", player->getComponent<ArmorComponent>()->getDodge());
+  return y + 1;
 }
-InventoryWindow::InventoryWindow(const WindowConfig& config) : BaseGameWindow(config) {
-  // terminal_layer(_config.layer);
-  // terminal_crop(_config.position.getX(), _config.position.getY(), _config._size.getX(), _config._size.getY());
-  std::cout << "Inv (layer: " << _config.layer << "); Position: " << _config.position << "; Size " << _config.size
-            << std::endl;
+int InventoryWindow::drawPlayerEquipments(const Entity* player, int x, int y) const {
+  Terminal::print(x, y++, "EQUIPMENTS");
+  player->getComponent<WeaponComponent>()->weapon->printItem(x, y++);
+  for (const auto& pair : player->getComponent<ArmorComponent>()->equipments) pair.second->printItem(x, y++);
+  return y;
 }

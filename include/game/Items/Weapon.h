@@ -14,12 +14,13 @@ class Weapon : public InventoryItem {
   int chanceCritical;
 
   Weapon(const std::string& name, Rarity rarity, int cost, int damage, int chanceCritical)
-      : InventoryItem(WeaponType, name, rarity, cost), damage(damage), chanceCritical(chanceCritical) {}
+      : InventoryItem(name, rarity, cost), damage(damage), chanceCritical(chanceCritical) {}
 
   void printItem(int x, int y) const override;
   int printItemExtended(int x, int y) const override;
   void equipItem(Entity* player, ChestComponent* chestComponent, int indexItem) override;
   void takeItem(Entity* player) override;
+  void addItemToInventory(InventoryComponent* inventory) override;
   void equipItem(Entity* player, int indexItem) override;
 };
 

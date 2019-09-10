@@ -2,12 +2,11 @@
 // Created by AsTeFu on 22.08.2019.
 //
 
-#include <BearLibTerminal.h>
 #include <ecs/EntityManager.h>
 #include <editor/Components/BrushComponent.h>
 #include <editor/Components/ColorComponent.h>
 #include <editor/Components/StructureComponent.h>
-#include <editor/CreatorUtility.h>
+#include <editor/EditorUtility.h>
 #include <editor/Systems/StructureSystem.h>
 #include <game/Scenes/SceneRenderUtility.h>
 #include <game/Utility/Input.h>
@@ -22,8 +21,8 @@ bool StructureSystem::filter(Entity* entity) const {
 }
 
 void StructureSystem::update(Entity* entity) {
-  if (Input::getKey(KeyCode::C) && terminal_check(TK_CONTROL)) {
-    CreatorUtility::createEmptyStructure(entity);
+  if (Input::getKey(KeyCode::C) && Input::check(KeyCode::CTRL)) {
+    EditorUtility::createEmptyStructure(entity);
   }
 
   if (Input::mouseLeft()) {
@@ -32,38 +31,45 @@ void StructureSystem::update(Entity* entity) {
     auto structure = entity->getComponent<StructureComponent>();
     if (isActiveTable(mousePosition, structure->size)) return;
 
-    auto brushComponent = getEntityManager()->getByTag("brush")[0];
-    auto brush = brushComponent->getComponent<BrushComponent>();
-    auto color = brushComponent->getComponent<ColorComponent>();
-
-    structure->objects[mousePosition.getX()][mousePosition.getY()] = Tile(brush->graphic, color->color);
+    drawTile(mousePosition, structure);
   }
 
-  if (Input::mouseRight()) {
-    Vector2 mousePosition = getMousePosition();
+  if (Input::mouseRight()) drawEmptyTile(entity);
+}
+void StructureSystem::drawTile(const Vector2& mousePosition, StructureComponent* structure) {
+  auto brushComponent = getEntityManager()->getByTag("brush")[0];
+  auto brush = brushComponent->getComponent<BrushComponent>();
+  auto color = brushComponent->getComponent<ColorComponent>();
 
-    auto structure = entity->getComponent<StructureComponent>();
-    if (isActiveTable(mousePosition, structure->size)) return;
+  structure->objects[mousePosition.getX()][mousePosition.getY()] = Tile(brush->graphic, color->color);
+}
+void StructureSystem::drawEmptyTile(const Entity* entity) {
+  Vector2 mousePosition = getMousePosition();
 
-    structure->objects[mousePosition.getX()][mousePosition.getY()] = Tile();
-  }
+  auto structure = entity->getComponent<StructureComponent>();
+  if (isActiveTable(mousePosition, structure->size)) return;
+
+  Tile tile;
+  if (mousePosition.getX() == 0 || mousePosition.getY() == 0) tile = Tile('#', Color::Gray);
+  if (mousePosition.getX() == structure->size.getX() - 1 || mousePosition.getY() == structure->size.getY() - 1)
+    tile = Tile('#', Color::Gray);
+  structure->objects[mousePosition.getX()][mousePosition.getY()] = tile;
 }
 void StructureSystem::postUpdate(Entity* entity) {
   auto component = entity->getComponent<StructureComponent>();
-
   Vector2 size(component->size.getX() + _left * 2, component->size.getY() + _top * 2 + 1);
 
-  terminal_layer(1);
-  terminal_crop(_position.getX(), _position.getY(), size.getX(), size.getY());
-  terminal_clear_area(_position.getX(), _position.getY(), size.getX(), size.getY());
+  Terminal::setLayer(1);
+  Terminal::crop(_position.getX(), _position.getY(), size.getX(), size.getY());
+  Terminal::clearArea(_position, size);
 
-  terminal_color("white");
+  Terminal::setColor(Color::White);
   SceneRenderUtility::drawBorder(_position, size);
 
   for (size_t x = 0; x < component->objects.size(); ++x) {
     for (size_t y = 0; y < component->objects[x].size(); ++y) {
       Terminal::setColor(component->objects[x][y].color);
-      terminal_put(_position.getX() + x + _left, _position.getY() + y + _top, component->objects[x][y].graphic);
+      Terminal::put(_position.getX() + x + _left, _position.getY() + y + _top, component->objects[x][y].graphic);
     }
   }
 
@@ -73,17 +79,16 @@ void StructureSystem::postUpdate(Entity* entity) {
     auto brush = brushComponent->getComponent<BrushComponent>();
     auto color = brushComponent->getComponent<ColorComponent>();
 
-    terminal_color(color_from_argb(120, color->color.r, color->color.g, color->color.b));
-    terminal_put(mousePosition.getX() + _position.getX() + _left, mousePosition.getY() + _position.getY() + _top,
-                 brush->graphic);
+    Terminal::setColor(Color(120, color->color.r, color->color.g, color->color.b));
+    Terminal::put(mousePosition.getX() + _position.getX() + _left, mousePosition.getY() + _position.getY() + _top,
+                  brush->graphic);
   }
 }
 
 Vector2 StructureSystem::getMousePosition() const {
-  int x = terminal_state(TK_MOUSE_X) - _left - _position.getX();
-  int y = terminal_state(TK_MOUSE_Y) - _top - _position.getY();
-
-  return {x, y};
+  Vector2 mousePosition = Input::getMousePosition();
+  mousePosition.translate(-_left - _position.getX(), -_top - _position.getY());
+  return mousePosition;
 }
 
 // TODO(ATF): переименовать

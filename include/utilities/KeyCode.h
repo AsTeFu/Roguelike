@@ -108,7 +108,7 @@ class KeyCode {
   static KeyCode KP_0;
   static KeyCode KP_PERIOD;
   static KeyCode SHIFT;
-  static KeyCode CONTROL;
+  static KeyCode CTRL;
   static KeyCode ALT;
   static KeyCode Close;
 };

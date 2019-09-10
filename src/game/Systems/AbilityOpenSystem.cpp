@@ -12,10 +12,10 @@ bool AbilityOpenSystem::filter(Entity* entity) const {
   return entity->hasComponent<PlayerComponent>();
 }
 void AbilityOpenSystem::update(Entity* entity) {
-  if (Input::getKey(KeyCode::O)) {
+  /* if (Input::getKeyDown(KeyCode::O)) {
     getSceneManager()->getContext()->addObject<EnhanceDTO>(
         entity->getComponent<SpecialComponent>(), entity->getComponent<AbilitiesComponent>(),
         entity->getComponent<LevelComponent>(), entity->getComponent<HealthComponent>());
     getSceneManager()->switchScene("Ability");
-  }
+  } */
 }

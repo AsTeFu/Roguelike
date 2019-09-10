@@ -51,6 +51,7 @@ class MenuScene : public Scene {
   void render() override;
   void update(SceneManager* sceneManager) override;
   void end(SceneManager* sceneManager) override;
+  void viewer(SceneManager* sceneManager);
 };
 
 #endif  // INCLUDE_GAME_SCENES_MENUSCENE_H_

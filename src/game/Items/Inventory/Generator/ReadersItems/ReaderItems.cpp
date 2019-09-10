@@ -11,17 +11,17 @@
 #include <vector>
 
 map<int, vector<string>> ReaderItems::readArmor() {
-  return readNames("Resource/Inventory/armorNames.txt");
+  return readNames("Resource\\Inventory\\armorNames.txt");
 }
 
 map<int, vector<string>> ReaderItems::readWeapon() {
-  return readNames("Resource/Inventory/weaponNames.txt");
+  return readNames("Resource\\Inventory\\weaponNames.txt");
 }
 vector<Range> ReaderItems::readDamage() {
-  return readRange("Resource/Inventory/weaponDamage.txt");
+  return readRange("Resource\\Inventory\\weaponDamage.txt");
 }
 vector<Range> ReaderItems::readProtect() {
-  return readRange("Resource/Inventory/armorProtect.txt");
+  return readRange("Resource\\Inventory\\armorProtect.txt");
 }
 
 map<int, vector<string>> ReaderItems::readNames(const std::string& path) {

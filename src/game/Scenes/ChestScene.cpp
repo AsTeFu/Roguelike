@@ -3,7 +3,6 @@
 //
 
 #include "game/Scenes/ChestScene.h"
-#include <BearLibTerminal.h>
 #include <ecs/Entity.h>
 #include <game/Components/ItemComponents/HealthComponent.h>
 #include <game/Components/PlayerComponents/StarvationComponent.h>
@@ -14,6 +13,7 @@
 #include <game/Scenes/SceneRenderUtility.h>
 #include <game/Utility/DTO/ChestDTO.h>
 #include <utilities/Color.h>
+#include <utilities/MathUtility.h>
 #include <utilities/Terminal.h>
 #include <algorithm>
 #include <string>
@@ -22,18 +22,18 @@
 #include "game/Utility/Input.h"
 
 void ChestScene::update(SceneManager* sceneManager) {
-  if (Input::getKeyDown(KeyCode::Space)) sceneManager->switchScene("Game");
+  if (Input::getKeyDown(KeyCode::Escape)) sceneManager->switchScene("Game");
 
   if (_currentItem == -1) return;
 
-  if (Input::getKeyDown(KeyCode::UpArrow)) increase();
-  if (Input::getKeyDown(KeyCode::DownArrow)) decrease();
+  if (Input::getKeyDown(KeyCode::UpArrow)) upward();
+  if (Input::getKeyDown(KeyCode::DownArrow)) downward();
 
-  if (Input::getKeyDown(KeyCode::Space)) equipMenu(sceneManager);
-  if (Input::getKeyDown(KeyCode::E)) takeMenu(sceneManager);
+  if (Input::getKeyDown(KeyCode::Space)) equipMenu();
+  if (Input::getKeyDown(KeyCode::E)) takeMenu();
 }
 
-void ChestScene::equipMenu(SceneManager* sceneManager) {
+void ChestScene::equipMenu() {
   auto item = game->chestComponent->items[_currentItem].get();
   item->equipItem(game->player, game->chestComponent, _currentItem);
   updateCursor();
@@ -43,7 +43,7 @@ void ChestScene::updateCursor() {
   if (game->chestComponent->items.empty()) _currentItem = -1;
 }
 
-void ChestScene::takeMenu(SceneManager* sceneManager) {
+void ChestScene::takeMenu() {
   if (isAvailableSpace()) {
     auto item = game->chestComponent->items[_currentItem].get();
     item->takeItem(game->player);
@@ -56,11 +56,11 @@ bool ChestScene::isAvailableSpace() const {
   return game->getComponent<InventoryComponent>()->items.size() < game->getComponent<InventoryComponent>()->maxItems;
 }
 
-void ChestScene::decrease() {
-  _currentItem = std::min<int>(game->chestComponent->items.size() - 1, _currentItem + 1);
+void ChestScene::upward() {
+  _currentItem = MathUtility::clamp(_currentItem - 1, 0, static_cast<int>(game->chestComponent->items.size()) - 1);
 }
-void ChestScene::increase() {
-  _currentItem = std::max(0, _currentItem - 1);
+void ChestScene::downward() {
+  _currentItem = MathUtility::clamp(_currentItem + 1, 0, static_cast<int>(game->chestComponent->items.size()) - 1);
 }
 
 void ChestScene::start(SceneManager* sceneManager) {

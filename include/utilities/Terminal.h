@@ -25,6 +25,8 @@ class Terminal {
   static void setLayer(int layer);
   static void put(int x, int y, char symbol);
   static void put(const Vector2& position, char symbol);
+  static void put(const Vector2& position, const Tile& tile);
+  static void put(int x, int y, const Tile& tile);
   static void print(int x, int y, const std::string& str);
   static void print(const Vector2& position, const std::string& str);
   static void printf(int x, int y, const char* str, ...);
@@ -34,6 +36,7 @@ class Terminal {
   static Tile pick(int x, int y, int index);
   static std::string readString(int x, int y, int max);
   static std::string readString(const Vector2& position, int max);
+  static void enableMouse();
 };
 
 #endif  // INCLUDE_UTILITIES_TERMINAL_H_

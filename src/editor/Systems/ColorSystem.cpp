@@ -2,7 +2,6 @@
 // Created by AsTeFu on 22.08.2019.
 //
 
-#include <BearLibTerminal.h>
 #include <ecs/EntityManager.h>
 #include <editor/Components/BrushComponent.h>
 #include <editor/Components/ColorComponent.h>
@@ -45,36 +44,34 @@ void ColorSystem::update(Entity* entity) {
   }
 }
 void ColorSystem::postUpdate(Entity* entity) {
-  Vector2 size(Config::getInstance().sizeTerminal.getX() - 20, 10);
-  terminal_layer(4);
-  terminal_crop(_position.getX(), _position.getY(), size.getX(), size.getY());
-  terminal_clear_area(_position.getX(), _position.getY(), size.getX(), size.getY());
+  Terminal::setLayer(4);
+  Terminal::crop(_position, _size);
+  Terminal::clearArea(_position, _size);
 
-  terminal_color("white");
+  Terminal::setColor(Color::White);
 
-  SceneRenderUtility::verticalBorder(_position, size);
-  SceneRenderUtility::horizontalBorder(_position, size);
+  SceneRenderUtility::drawBorder(_position, _size);
 
-  int offsetX = _position.getX() + 5;
-  int offsetY = _position.getY() + 2;
+  int x = _position.getX() + leftMargin;
+  int y = _position.getY() + topMargin;
 
   int i = 0;
   auto component = entity->getComponent<ColorsComponent>();
   for (const auto& color : component->colors) {
     if (i == _currentColor) {
-      terminal_color("white");
-      SceneRenderUtility::drawBorder(offsetX - 1, offsetY - 1, 7, 4);
+      Terminal::setColor(Color::White);
+      SceneRenderUtility::drawBorder(x - 1, y - 1, 7, 4);
     }
 
     Terminal::setColor(color->color);
-    Terminal::print(offsetX, offsetY++, "#####");
-    Terminal::print(offsetX, offsetY--, "#####");
+    Terminal::print(x, y++, "#####");
+    Terminal::print(x, y--, "#####");
 
-    offsetX += 3 + 5;
+    x += 3 + 5;
     i++;
-    if (offsetX > _position.getX() + size.getX() - 8) {
-      offsetX = _position.getX() + 5;
-      offsetY += 3;
+    if (x > _position.getX() + _size.getX() - 8) {
+      x = _position.getX() + 5;
+      y += 3;
     }
   }
 }

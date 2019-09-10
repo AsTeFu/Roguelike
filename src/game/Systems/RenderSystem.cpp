@@ -45,7 +45,7 @@ void RenderSystem::postUpdate(Entity* entity) {
 
   Terminal::put(graphic->renderPos.getX() + graphic->offset.getX(), graphic->renderPos.getY() + graphic->offset.getY(),
                 graphic->display.graphic);
-  // terminal_put(transform->position.getX() + graphic->offset.getX(), transform->position.getY() +
+  // terminal_put(transform->positionShop.getX() + graphic->offset.getX(), transform->positionShop.getY() +
   // graphic->offset.getY(), graphic->display.graphic);
 }
 

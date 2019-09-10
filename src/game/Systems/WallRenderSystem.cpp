@@ -39,6 +39,7 @@ void WallRenderSystem::postUpdate(Entity* entity) {
 
 bool WallRenderSystem::pickDot(int x, int y) const {
   // TODO(AsTeFu): pick тут заменить
+  // return Terminal::pickColor(x, y, 0) == Color(255, 180, 180, 180) && Terminal::pick(x, y, 0).graphic != '#';
   return terminal_pick_color(x, y, 0) == color_from_argb(255, 180, 180, 180) && terminal_pick(x, y, 0) != '#';
 }
 bool WallRenderSystem::isVisibleWall(int x, int y) const {

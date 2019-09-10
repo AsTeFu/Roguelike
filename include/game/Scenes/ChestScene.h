@@ -20,10 +20,10 @@ class ChestScene : public Scene {
   int topMargin{2};
   const std::string cursor{"=>"};
 
-  void decrease();
-  void increase();
-  void equipMenu(SceneManager* sceneManager);
-  void takeMenu(SceneManager* sceneManager);
+  void upward();
+  void downward();
+  void equipMenu();
+  void takeMenu();
 
   int renderItems(int x, int y) const;
   int renderWeaponPlayer(int x, int y) const;

@@ -5,13 +5,12 @@
 #ifndef INCLUDE_GAME_COMPONENTS_ITEMCOMPONENTS_INVENTORYCOMPONENT_H_
 #define INCLUDE_GAME_COMPONENTS_ITEMCOMPONENTS_INVENTORYCOMPONENT_H_
 
+#include <game/Items/InventoryItem.h>
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
-#include "game/Components/ItemComponents/WeaponComponent.h"
 #include "ecs/IComponent.h"
-#include "game/Components/ItemComponents/ArmorComponent.h"
 
 class InventoryComponent : public IComponent {
  public:
@@ -19,23 +18,13 @@ class InventoryComponent : public IComponent {
   size_t maxItems;
 
   explicit InventoryComponent(size_t maxItems) : maxItems(maxItems) {}
-  InventoryComponent(const std::vector<InventoryItem*>& items, size_t maxItems) : maxItems(maxItems) {
-    for (const auto& item : items) {
-      if (item->itemType == ArmorType) addItem<Armor>(dynamic_cast<Armor*>(item));
-      if (item->itemType == WeaponType) addItem<Weapon>(dynamic_cast<Weapon*>(item));
-    }
-  }
+
   InventoryComponent(const InventoryComponent& inventoryComponent) : maxItems(inventoryComponent.maxItems) {
     for (const auto& item : inventoryComponent.items) {
-      if (item->itemType == ArmorType) addItem<Armor>(dynamic_cast<Armor*>(item.get()));
-      if (item->itemType == WeaponType) addItem<Weapon>(dynamic_cast<Weapon*>(item.get()));
+      item->addItemToInventory(this);
+      // if (item->itemType == ArmorType) addItem<Armor>(dynamic_cast<Armor*>(item.get()));
+      // if (item->itemType == WeaponType) addItem<Weapon>(dynamic_cast<Weapon*>(item.get()));
     }
-  }
-
-  std::vector<InventoryItem*> getItems() {
-    std::vector<InventoryItem*> tmp;
-    for (const auto& item : items) tmp.push_back(item.get());
-    return tmp;
   }
 
   template<typename Type>
@@ -52,10 +41,13 @@ class InventoryComponent : public IComponent {
     items.erase(items.begin() + i);
   }
   void setInventory(InventoryComponent* inventoryComponent) {
-    for (const auto& item : inventoryComponent->items) {
+    maxItems = inventoryComponent->maxItems;
+    items.clear();
+    /* for (const auto& item : inventoryComponent->items) {
+
       if (item->itemType == ArmorType) addItem<Armor>(dynamic_cast<Armor*>(item.get()));
       if (item->itemType == WeaponType) addItem<Weapon>(dynamic_cast<Weapon*>(item.get()));
-    }
+    } */
   }
 };
 

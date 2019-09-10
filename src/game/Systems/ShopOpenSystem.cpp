@@ -18,11 +18,7 @@ void ShopOpenSystem::update(Entity* entity) {
 
   if (Input::getKey(KeyCode::Enter) &&
       player->getComponent<Transform>()->position == entity->getComponent<Transform>()->position) {
-    getSceneManager()->getContext()->addObject<ShopDTO>(
-        shop, player->getComponent<WeaponComponent>(), player->getComponent<ArmorComponent>(),
-        player->getComponent<WalletComponent>(), player->getComponent<StarvationComponent>(),
-        player->getComponent<HealthComponent>(), player->getComponent<InventoryComponent>(),
-        player->getComponent<SpecialComponent>());
+    getSceneManager()->getContext()->addObject<ShopDTO>(shop, player);
     getSceneManager()->switchScene("Shop");
   }
 }

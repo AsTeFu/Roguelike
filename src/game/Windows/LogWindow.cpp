@@ -4,17 +4,19 @@
 
 #include "game/Windows/LogWindow.h"
 #include <game/Logs/GameLogger.h>
+#include <game/Scenes/SceneRenderUtility.h>
 void LogWindow::render() const {
   configurateTerminal();
   Terminal::clearArea(_config.position, _config.size);
 
   GameLogger::getInstance().render(_config.position.getY() + 2);
 
+  SceneRenderUtility::drawBorder(_config.position, _config.size);
   Terminal::print(_config.position.getX() + 4, _config.position.getY(), _config.name);
 }
 LogWindow::LogWindow(const WindowConfig& config) : BaseGameWindow(config) {
-  // terminal_layer(_config.layer);
-  // terminal_crop(_config.position.getX(), _config.position.getY(), _config._size.getX(), _config._size.getY());
+  Terminal::setLayer(_config.layer);
+  Terminal::crop(_config.position, _config.size);
   std::cout << "Log (layer: " << _config.layer << "); Position: " << _config.position << "; Size " << _config.size
             << std::endl;
 }

@@ -44,3 +44,18 @@ void Input::updateKeys() {
     }
   }
 }
+bool Input::check(const KeyCode& keyCode) {
+  return terminal_check(keyCode.key);
+}
+bool Input::isMouseWheel() {
+  return terminal_peek() == TK_MOUSE_SCROLL;
+}
+int Input::getMouseWheel() {
+  return terminal_state(TK_MOUSE_WHEEL);
+}
+Vector2 Input::getMousePosition() {
+  int x = terminal_state(TK_MOUSE_X);
+  int y = terminal_state(TK_MOUSE_Y);
+
+  return {x, y};
+}

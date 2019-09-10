@@ -48,7 +48,8 @@ Entity* ECSUtility::transferPlayer(Entity* const fromPlayer, Entity* toPlayer) {
 
   toPlayer->getComponent<WeaponComponent>()->weapon.swap(fromPlayer->getComponent<WeaponComponent>()->weapon);
   toPlayer->getComponent<ArmorComponent>()->setEquipments(fromPlayer->getComponent<ArmorComponent>());
-  // toPlayer->getComponent<InventoryComponent>()->setInventory(fromPlayer->getComponent<InventoryComponent>());
+  toPlayer->removeComponent<InventoryComponent>();
+  toPlayer->addComponent<InventoryComponent>(*fromPlayer->getComponent<InventoryComponent>());
 
   return toPlayer;
 }

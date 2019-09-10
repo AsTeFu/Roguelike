@@ -2,7 +2,6 @@
 // Created by AsTeFu on 22.08.2019.
 //
 
-#include <BearLibTerminal.h>
 #include <ecs/EntityManager.h>
 #include <editor/Components/BrushesComponent.h>
 #include <editor/Systems/BrushSystem.h>
@@ -10,14 +9,15 @@
 #include <game/Utility/Input.h>
 #include <game/Utility/Utility.h>
 #include <utilities/MathUtility.h>
+#include <utilities/Terminal.h>
 
 bool BrushSystem::filter(Entity* entity) const {
   return entity->hasComponent<BrushesComponent>();
 }
 void BrushSystem::update(Entity* entity) {
   if (Input::hasInput()) {
-    if (terminal_peek() == TK_MOUSE_SCROLL) {
-      int amount = terminal_state(TK_MOUSE_WHEEL);
+    if (Input::isMouseWheel()) {
+      int amount = Input::getMouseWheel();
 
       if (std::abs(amount) > 0) {
         int size = static_cast<int>(entity->getComponent<BrushesComponent>()->brushes.size());
@@ -33,45 +33,33 @@ void BrushSystem::update(Entity* entity) {
         }
       }
     }
-    /*
-    for (int i = 0; i < 10; ++i) {
-      if (Input::getKey(TK_1 + i)) {
-        auto brush = getEntityManager()->getByTag("brush")[0]->getComponent<BrushComponent>();
-        auto brushes = entity->getComponent<BrushesComponent>();
-
-        brush->name = brushes->brushes[i]->name;
-        brush->graphic = brushes->brushes[i]->graphic;
-        _currentBrush = i;
-      }
-    } */
   }
 }
 void BrushSystem::postUpdate(Entity* entity) {
-  Vector2 size(30, 30);
-  terminal_layer(2);
-  terminal_crop(_position.getX(), _position.getY(), size.getX(), size.getY());
-  terminal_clear_area(_position.getX(), _position.getY(), size.getX(), size.getY());
+  Terminal::setLayer(2);
+  Terminal::crop(_position, _size);
+  Terminal::clearArea(_position, _size);
 
-  terminal_color("white");
+  Terminal::setColor(Color::White);
 
-  SceneRenderUtility::drawBorder(_position, size);
+  SceneRenderUtility::drawBorder(_position, _size);
 
-  int offsetX = _position.getX() + 2;
-  int offsetY = _position.getY() + 2;
+  int x = _position.getX() + _leftMargin;
+  int y = _position.getY() + _topMargin;
 
-  terminal_print(offsetX, offsetY, "Brushes:");
+  Terminal::print(x, y, "Brushes:");
 
-  offsetX += 1;
-  offsetY += 2;
+  x += 1;
+  y += 2;
 
   int i = 1;
   auto component = entity->getComponent<BrushesComponent>();
   for (const auto& brush : component->brushes) {
     if (i - 1 == _currentBrush)
-      terminal_color("white");
+      Terminal::setColor(Color::White);
     else
-      terminal_color("gray");
-    terminal_printf(offsetX, offsetY++, "%d. %s: %c", i, brush->name.c_str(), brush->graphic);
+      Terminal::setColor(Color::Gray);
+    Terminal::printf(x, y++, "%d. %s: %c", i, brush->name.c_str(), brush->graphic);
     i++;
   }
 }

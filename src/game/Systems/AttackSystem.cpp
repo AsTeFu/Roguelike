@@ -3,7 +3,7 @@
 //
 
 #include "game/Systems/AttackSystem.h"
-#include <Utilities/Random.h>
+#include <utilities/Random.h>
 #include <game/Components/AIController.h>
 #include <game/Components/AttackComponent.h>
 #include <game/Components/BaseComponent/Transform.h>
@@ -11,7 +11,6 @@
 #include <game/Components/ItemComponents/SpecialComponent.h>
 #include <game/Components/ItemComponents/WeaponComponent.h>
 #include <game/Components/PlayerComponents/AbilitiesComponent.h>
-#include <game/Components/PlayerComponents/PlayerComponent.h>
 #include <game/Logs/GameLogger.h>
 #include <game/Utility/Input.h>
 #include "ecs/EntityManager.h"
@@ -31,10 +30,10 @@ void AttackSystem::preUpdate(Entity* entity) {
   auto entityPos = entity->getComponent<Transform>();
   auto entityAttack = entity->getComponent<AIController>();
 
-  if ((playerPos->position - entityPos->position).len2() <= 2) {
+  if ((playerPos->position - entityPos->position).len2() <= 2 && Input::getKeyDown(KeyCode::Space)) {
     if (entityAttack->lastPosition == playerPos->position) attack(entity, player);
     entityAttack->lastPosition.set(playerPos->position);
-    if (Input::getKey(KeyCode::Space)) attack(player, entity);
+    attack(player, entity);
   }
 }
 
@@ -66,14 +65,6 @@ void AttackSystem::attack(Entity* entity, Entity* target) {
 
   int damage = weapon->damage;
   int bonusCritical = 0;
-
-  if (entity->getID() == 1 && entity->getComponent<AbilitiesComponent>()->hasAbility("Кровавая баня")) {
-    damage = static_cast<int>(120.0 * damage / 100.0);
-  }
-
-  if (entity->getID() == 1 && entity->getComponent<AbilitiesComponent>()->hasAbility("Точность")) {
-    bonusCritical = 15;
-  }
 
   if (Random::random(100) < weapon->chanceCritical + entitySpecial->getValue(LUCK) * 2 + bonusCritical) {
     if (target->getID() == 1)

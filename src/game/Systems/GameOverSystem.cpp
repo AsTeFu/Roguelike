@@ -22,7 +22,7 @@ void GameOverSystem::postUpdate(Entity* entity) {
 
   // Проиграл по хп
   if (entity->hasComponent<HealthComponent>() && entity->getComponent<HealthComponent>()->health <= 0) {
-    // getSceneManager()->getContext()->addObject<PlayerDTO>(_roomManager->getPlayerInfo());
-    getSceneManager()->switchScene("EndGame");
+    getSceneManager()->getContext()->addObject<PlayerDTO>(_roomManager->getCurrentPlayer());
+    getSceneManager()->switchScene(gameOverScene);
   }
 }

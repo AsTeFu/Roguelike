@@ -48,6 +48,11 @@ void Armor::equipItem(Entity* player, int indexItem) {
 
   updateEffects(player, newItem, oldItem);
 }
+
+void Armor::addItemToInventory(InventoryComponent* inventory) {
+  inventory->addItem<Armor>(new Armor(*this));
+}
+
 void Armor::takeItem(Entity* player) {
   auto* armor = new Armor(*this);
   player->getComponent<InventoryComponent>()->items.push_back(std::unique_ptr<Armor>(armor));
@@ -60,7 +65,7 @@ void Armor::updateEffects(const Entity* player, const Armor* newItem, const Armo
 }
 Armor::Armor(const std::string& name, Rarity rarity, int cost, Slot slot, int protect, int dodge,
              std::map<std::string, int> effects)
-    : InventoryItem(ArmorType, name, rarity, cost),
+    : InventoryItem(name, rarity, cost),
       slot(slot),
       protect(protect),
       dodge(dodge),

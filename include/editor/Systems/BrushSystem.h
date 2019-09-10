@@ -10,6 +10,9 @@
 class BrushSystem : public ISystem {
  private:
   Vector2 _position;
+  Vector2 _size;
+  int _leftMargin{2};
+  int _topMargin{2};
   int _currentBrush{};
 
  protected:
@@ -21,6 +24,7 @@ class BrushSystem : public ISystem {
               const Vector2& position)
       : ISystem(entityManager, systemManager, sceneManager), _position(position) {
     updateComponents();
+    _size = {30, 30};
   }
   bool filter(Entity* entity) const override;
 };

@@ -3,7 +3,6 @@
 //
 
 #include "game/Scenes/BackpackScene.h"
-#include <BearLibTerminal.h>
 #include <game/Scenes/SceneRenderUtility.h>
 #include <utilities/Color.h>
 #include <utilities/Terminal.h>
@@ -13,14 +12,13 @@
 
 BackpackScene::BackpackScene(Context* const context, SceneManager* sceneManager) : Scene(context, sceneManager) {}
 void BackpackScene::update(SceneManager* sceneManager) {
-  if (Input::getKeyDown(KeyCode::Escape) || Input::getKey(KeyCode::I)) {
-    sceneManager->switchScene("Game");
-  }
-  if (Input::getKeyDown(KeyCode::UpArrow)) increase();
-  if (Input::getKeyDown(KeyCode::DownArrow)) decrease();
-  if (Input::getKeyDown(KeyCode::C)) deleteMenu(sceneManager);
+  if (Input::getKeyDown(KeyCode::Escape) || Input::getKey(KeyCode::I)) sceneManager->switchScene("Game");
 
-  if (Input::getKeyDown(KeyCode::Space)) equipMenu(sceneManager);
+  if (Input::getKeyDown(KeyCode::UpArrow)) upward();
+  if (Input::getKeyDown(KeyCode::DownArrow)) downward();
+  if (Input::getKeyDown(KeyCode::C)) deleteMenu();
+
+  if (Input::getKeyDown(KeyCode::Space)) equipMenu();
 }
 void BackpackScene::start(SceneManager* sceneManager) {
   backpack = _context->getObject<BackpackDTO>();
@@ -49,7 +47,7 @@ void BackpackScene::renderSpecial() const {
   int y = positionSpecial.getY() + topMargin;
 
   SceneRenderUtility::drawBorder(positionSpecial, sizeSpecial);
-  terminal_printf(x, positionSpecial.getY(), "SPECIAL");
+  Terminal::print(x, positionSpecial.getY(), "SPECIAL");
 
   y = renderSpecial(x, y);
 }
@@ -141,16 +139,16 @@ int BackpackScene::renderWeapon(int x, int y) const {
 void BackpackScene::renderCursor(int x, int y) const {
   Terminal::print(x - static_cast<int>(cursor.size()), y, cursor);
 }
-void BackpackScene::decrease() {
+void BackpackScene::downward() {
   _currentItem = std::min<int>(backpack->getComponent<InventoryComponent>()->items.size() +
                                    backpack->getComponent<ArmorComponent>()->equipments.size(),
                                _currentItem + 1);
 }
-void BackpackScene::increase() {
+void BackpackScene::upward() {
   _currentItem = std::max(0, _currentItem - 1);
 }
 
-void BackpackScene::equipMenu(SceneManager* sceneManager) {
+void BackpackScene::equipMenu() {
   if (isInventory()) return;
   int currItem = getInventoryItemIndex();
   backpack->getComponent<InventoryComponent>()->items[currItem]->equipItem(backpack->player, currItem);
@@ -162,11 +160,13 @@ bool BackpackScene::isInventory() const {
   return _currentItem - static_cast<int>(backpack->getComponent<ArmorComponent>()->equipments.size()) <= 0;
 }
 
-void BackpackScene::deleteMenu(SceneManager* sceneManager) {
-  if (_currentItem - static_cast<int>(backpack->getComponent<ArmorComponent>()->equipments.size()) <= 0) return;
-  int currItem = _currentItem - backpack->getComponent<ArmorComponent>()->equipments.size() - 1;
+void BackpackScene::deleteMenu() {
+  auto armors = backpack->getComponent<ArmorComponent>();
+  if (_currentItem - static_cast<int>(armors->equipments.size()) <= 0) return;
+  int currItem = _currentItem - static_cast<int>(armors->equipments.size()) - 1;
 
-  backpack->getComponent<InventoryComponent>()->deleteItem(currItem);
+  auto inventory = backpack->getComponent<InventoryComponent>();
+  inventory->deleteItem(currItem);
 
-  if (backpack->getComponent<InventoryComponent>()->items.size() == static_cast<size_t>(currItem)) _currentItem--;
+  if (inventory->items.size() == static_cast<size_t>(currItem)) _currentItem--;
 }

@@ -16,6 +16,9 @@ class StructureSystem : public ISystem {
   Vector2 getMousePosition() const;
   bool isActiveTable(const Vector2 &point, const Vector2 &sizeTable) const;
 
+  void drawEmptyTile(const Entity *entity);
+  void drawTile(const Vector2 &mousePosition, StructureComponent *structure);
+
  protected:
   void update(Entity *entity) override;
   void postUpdate(Entity *entity) override;

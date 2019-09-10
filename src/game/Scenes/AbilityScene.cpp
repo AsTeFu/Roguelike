@@ -3,13 +3,15 @@
 //
 
 #include "game/Scenes/AbilityScene.h"
-#include <BearLibTerminal.h>
 #include <game/Utility/Config.h>
 #include <game/Utility/Input.h>
+#include <utilities/Terminal.h>
 #include <algorithm>
 #include <fstream>
 #include <string>
 #include <vector>
+
+// TODO(AsTeFu): устаревший код
 
 AbilityScene::AbilityScene(Context *const context, SceneManager *sceneManager)
     : Scene(context, sceneManager), _side(LeftSide) {
@@ -118,7 +120,8 @@ void AbilityScene::render() {
 }
 
 void AbilityScene::leftRender() {
-  terminal_clear();
+  /*
+  Terminal::clear();
 
   int topIndent = 2;
   int leftIndent = 10;
@@ -132,15 +135,15 @@ void AbilityScene::leftRender() {
 
   offsetY += 5;
 
-  // horizontalBorder({offsetX, offsetY}, size);
-  // verticalBorder({offsetX, offsetY}, size);
+  // horizontalBorder({offsetX, offsetY}, sizeShop);
+  // verticalBorder({offsetX, offsetY}, sizeShop);
 
   int rightSideOffsetX = (size.getX() - leftIndent) / 2;
-  // verticalLine({rightSideOffsetX, offsetY}, {1, size.getY()});
+  // verticalLine({rightSideOffsetX, offsetY}, {1, sizeShop.getY()});
 
   size.setY(15);
-  // horizontalBorder({offsetX, offsetY + 20}, size);
-  // verticalBorder({offsetX, offsetY + 20}, size);
+  // horizontalBorder({offsetX, offsetY + 20}, sizeShop);
+  // verticalBorder({offsetX, offsetY + 20}, sizeShop);
 
   offsetX += leftIndent / 2 + 4;
   offsetY += 2;
@@ -223,9 +226,11 @@ void AbilityScene::leftRender() {
   // terminal_printf(offsetX + 4, offsetY, "available ability: %d", 6);
 
   terminal_color("white");
+   */
 }
 
 void AbilityScene::rightRender() {
+  /*
   terminal_clear();
 
   int topIndent = 2;
@@ -240,15 +245,15 @@ void AbilityScene::rightRender() {
 
   offsetY += 5;
 
-  // horizontalBorder({offsetX, offsetY}, size);
-  // verticalBorder({offsetX, offsetY}, size);
+  // horizontalBorder({offsetX, offsetY}, sizeShop);
+  // verticalBorder({offsetX, offsetY}, sizeShop);
 
   int rightSideOffsetX = (size.getX() - leftIndent) / 2;
-  // verticalLine({rightSideOffsetX, offsetY}, {1, size.getY()});
+  // verticalLine({rightSideOffsetX, offsetY}, {1, sizeShop.getY()});
 
   size.setY(15);
-  // horizontalBorder({offsetX, offsetY + 20}, size);
-  // verticalBorder({offsetX, offsetY + 20}, size);
+  // horizontalBorder({offsetX, offsetY + 20}, sizeShop);
+  // verticalBorder({offsetX, offsetY + 20}, sizeShop);
 
   offsetX += leftIndent / 2 + 4;
   offsetY += 2;
@@ -325,14 +330,6 @@ void AbilityScene::rightRender() {
   terminal_color("white");
 
   // terminal_printf(offsetX + 4, offsetY, "available ability: %d", 6);
+   */
 }
 
-std::vector<string> AbilityScene::split(const string &s, char regex) {
-  std::stringstream ss(s);
-  string item;
-  std::vector<string> items;
-  while (std::getline(ss, item, regex)) {
-    items.push_back(std::move(item));
-  }
-  return items;
-}

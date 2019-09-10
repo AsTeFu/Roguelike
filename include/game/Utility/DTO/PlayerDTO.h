@@ -16,32 +16,13 @@
 
 class PlayerDTO : public ObjectDTO {
  public:
-  std::string name;
-  int cash;
-  int food;
-  int health;
-  int steps;
-  const WeaponComponent* weapon;
-  const ArmorComponent* armor;
-  const InventoryComponent* inventory;
-  const SpecialComponent* special;
-  const LevelComponent* level;
-  const AbilitiesComponent* abilities;
+  Entity* player;
+  explicit PlayerDTO(Entity* player) : player(player) {}
 
-  PlayerDTO(const string& name, int cash, int food, int health, int steps, const WeaponComponent* weapon,
-            const ArmorComponent* armor, const InventoryComponent* inventory, const SpecialComponent* special,
-            const LevelComponent* level, const AbilitiesComponent* abilities)
-      : name(name),
-        cash(cash),
-        food(food),
-        health(health),
-        steps(steps),
-        weapon(weapon),
-        armor(armor),
-        inventory(inventory),
-        special(special),
-        level(level),
-        abilities(abilities) {}
+  template<typename Component>
+  Component* getComponent() {
+    return player->getComponent<Component>();
+  }
 };
 
 #endif  // INCLUDE_GAME_UTILITY_DTO_PLAYERDTO_H_

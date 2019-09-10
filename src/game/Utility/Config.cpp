@@ -3,7 +3,7 @@
 //
 
 #include "game/Utility/Config.h"
-#include <Utilities/Color.h>
+#include <utilities/Color.h>
 #include <game/Utility/Utility.h>
 #include <utilities/StringUtility.h>
 #include <fstream>
@@ -26,8 +26,9 @@ Config::Config() {
   _variables.insert(make_pair("maxItemsChest", bind(&Config::readMaxItemsChest, this, _1)));
   _variables.insert(make_pair("disableColor", bind(&Config::readDisableColor, this, _1)));
   _variables.insert(make_pair("experienceRange", bind(&Config::readExperienceRange, this, _1)));
+  _variables.insert(make_pair("roomSize", bind(&Config::readRoomSize, this, _1)));
 
-  std::string path = "Resource/Configuration";
+  std::string path = "Resource\\Configuration";
   std::string buffer;
   std::ifstream file(path);
 
@@ -63,7 +64,7 @@ void Config::readSizeTerminal(const std::string& str) {
 }
 void Config::readBorderSize(const std::string& str) {
   borderSize = readTwoValues<Vector2>(StringUtility::split(str, ','));
-  std::cout << "Border size: " << borderSize << std::endl;
+  std::cout << "Border sizeShop: " << borderSize << std::endl;
 }
 void Config::readArea(const std::string& str) {
   area = readTwoValues<Vector2>(StringUtility::split(str, ','));
@@ -113,4 +114,8 @@ void Config::readDisableColor(const std::string& str) {
 void Config::readExperienceRange(const std::string& str) {
   experienceRange = readTwoValues<Range>(StringUtility::split(str, ','));
   std::cout << "Experience range: " << experienceRange << std::endl;
+}
+void Config::readRoomSize(const std::string& str) {
+  roomSize = readTwoValues<Vector2>(StringUtility::split(str, ','));
+  std::cout << "Room size: " << experienceRange << std::endl;
 }

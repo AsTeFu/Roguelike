@@ -22,7 +22,7 @@ void SettingScene::render() {
 
   Vector2 size(Config::getInstance().sizeTerminal.getX() - 20, 3);
   Vector2 position(10, 3);
-  // drawHeader(position, size, "Setting");
+  // drawHeader(positionShop, sizeShop, "Setting");
 
   std::string message1 = "Напиши, чтобы ты хотел здесь настроить в гугл форму";
   std::string message2 = "Back (Enter or Escape)";

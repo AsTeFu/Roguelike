@@ -13,7 +13,7 @@
 class MedkitItem : public InventoryItem {
  public:
   int health;
-  MedkitItem(int health, int cost) : InventoryItem(MedkitType, "Medkit", Usual, cost), health(health) {}
+  MedkitItem(int health, int cost) : InventoryItem("Medkit", Usual, cost), health(health) {}
   void printItem(int x, int y) const override {
     Terminal::printf(x, y, "[color=red]%s:[/color] %d", name.c_str(), health);
   }

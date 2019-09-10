@@ -10,25 +10,25 @@
 
 enum Slot { Helmet = 0, Armour, Boots };
 enum Rarity { Usual = 1, Rare, Epic, Legendary, Mythical, Sublime };
-enum ItemType { ArmorType, WeaponType, CoinType, MedkitType, FoodType };
 
 class ChestComponent;
+class InventoryComponent;
 
 class InventoryItem {
  public:
-  ItemType itemType;
   std::string name;
   Rarity rarity;
   int cost;
 
-  InventoryItem(ItemType itemType, std::string name, Rarity rarity, int cost)
-      : itemType(itemType), name(std::move(name)), rarity(rarity), cost(cost) {}
+  InventoryItem(std::string name, Rarity rarity, int cost)
+      : name(std::move(name)), rarity(rarity), cost(cost) {}
 
   virtual ~InventoryItem() = default;
   virtual void printItem(int x, int y) const = 0;
   virtual int printItemExtended(int x, int y) const = 0;
   virtual void equipItem(Entity* player, int indexItem) = 0;
   virtual void equipItem(Entity* player, ChestComponent* chestComponent, int indexItem) = 0;
+  virtual void addItemToInventory(InventoryComponent* inventory) {}
   virtual void takeItem(Entity* player) = 0;
 };
 

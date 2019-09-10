@@ -3,11 +3,12 @@
 //
 
 #include "game/Scenes/GameScene.h"
+#include <BearLibTerminal.h>
 #include <game/Utility/DTO/NameDTO.h>
 #include <game/Utility/Input.h>
 
 void GameScene::update(SceneManager* sceneManager) {
-  // if (Input::getKey(TK_ESCAPE)) terminal_close();
+  if (Input::getKeyDown(KeyCode::Escape) && Input::check(KeyCode::CTRL)) sceneManager->switchScene(menuScene);
 
   _windowsManager.update(&roomManager);
 }

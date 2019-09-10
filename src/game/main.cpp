@@ -1,4 +1,4 @@
-#include <editor/CreatorScene.h>
+#include <editor/EditorScene.h>
 #include <game/Scenes/AbilityScene.h>
 #include <game/Scenes/BackpackScene.h>
 #include <game/Scenes/ChestScene.h>
@@ -10,6 +10,7 @@
 #include <game/Scenes/ShopScene.h>
 #include <game/Scenes/SpecialScene.h>
 #include <game/Utility/Input.h>
+#include <roomviewer/RoomViewerScene.h>
 #include <ctime>
 #include "game/Scenes/SceneManager.h"
 
@@ -17,7 +18,7 @@ int main() {
   Terminal::start();
 
   // terminal_set("window: title='Roguelike by ATF'");
-  // terminal_set("window: size=150x45");
+  // terminal_set("window: sizeShop=150x45");
   // terminal_set("window: cellsize=8x16, _size=40x40");
   // terminal_set("palette.Usual = 255, 40, 180, 90");
   // terminal_set("palette.Rare = 255, 0, 191, 255");
@@ -49,7 +50,8 @@ int main() {
   sceneManager.addScene(gameOverScene, new EndGameScene(&context, &sceneManager));
   sceneManager.addScene(settingScene, new SettingScene(&context, &sceneManager));
 
-  sceneManager.addScene(editorScene, new CreatorScene(&context, &sceneManager));
+  sceneManager.addScene(editorScene, new EditorScene(&context, &sceneManager));
+  sceneManager.addScene("Viewer", new RoomViewerScene(&context, &sceneManager));
 
   sceneManager.switchScene(menuScene);
   Terminal::refresh();

@@ -28,7 +28,7 @@ void CameraSystem::postUpdate(Entity* entity) {
   int lengthX = transform->position.getX() - target->position.getX();
   int lengthY = transform->position.getY() - target->position.getY();
 
-  // std::cout << "CameraPos: " << transform->position << "; TargetPos: " << target->position << ";"
+  // std::cout << "CameraPos: " << transform->positionShop << "; TargetPos: " << target->positionShop << ";"
   //          << "Length: " << Vector2(lengthX, lengthY) << std::endl;
 
   if (abs(lengthX) > camera->border.getX()) {

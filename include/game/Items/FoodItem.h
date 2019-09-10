@@ -5,13 +5,14 @@
 #ifndef INCLUDE_GAME_ITEMS_FOODITEM_H_
 #define INCLUDE_GAME_ITEMS_FOODITEM_H_
 
+#include <game/Components/PlayerComponents/StarvationComponent.h>
 #include <game/Logs/GameLogger.h>
 #include <utilities/Terminal.h>
 
 class FoodItem : public InventoryItem {
  public:
   int food;
-  FoodItem(int food, int cost) : InventoryItem(FoodType, "Food", Usual, cost), food(food) {}
+  FoodItem(int food, int cost) : InventoryItem("Food", Usual, cost), food(food) {}
   void printItem(int x, int y) const override {
     Terminal::printf(x, y, "[color=green]%s:[/color] %d", name.c_str(), food);
   }
