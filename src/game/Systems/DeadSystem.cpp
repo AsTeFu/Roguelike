@@ -3,9 +3,9 @@
 //
 
 #include "game/Systems/DeadSystem.h"
-#include <utilities/Random.h>
 #include <game/Components/BaseComponent/CameraComponent.h>
 #include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Lighting.h>
 #include <game/Components/BaseComponent/Transform.h>
 #include <game/Components/EnvironmentComponents/ChestComponent.h>
 #include <game/Components/ItemComponents/HealthComponent.h>
@@ -18,6 +18,7 @@
 #include <game/Logs/GameLogger.h>
 #include <game/Utility/Config.h>
 #include <game/Utility/LevelUtility.h>
+#include <utilities/Random.h>
 #include "ecs/SystemManager.h"
 
 bool DeadSystem::filter(Entity* entity) const {
@@ -43,9 +44,11 @@ void DeadSystem::update(Entity* entity) {
 }
 Entity* DeadSystem::createChest(const Entity* entity) const {
   auto deadEntity = getEntityManager()->createEntity();
-  deadEntity->addComponent<Transform>(entity->getComponent<Transform>()->position);
-  deadEntity->addComponent<Graphic>(Display('&', entity->getComponent<Graphic>()->display.color));
+  auto& position = entity->getComponent<Transform>()->position;
+  deadEntity->addComponent<Transform>(position);
+  deadEntity->addComponent<Graphic>('&', entity->getComponent<Graphic>()->display.color, 4);
   deadEntity->addComponent<ChestComponent>();
+  deadEntity->addComponent<Lighting>(position);
   deadEntity->getComponent<ChestComponent>()->isOpen = true;
   return deadEntity;
 }

@@ -27,6 +27,7 @@ class Room {
   int exitID{0};
   Engine _engine;
   RoomManager* _roomManager;
+  SceneManager* _sceneManager;
   GeneratorInventoryItem _generator{};
 
  public:

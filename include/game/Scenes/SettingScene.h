@@ -9,6 +9,8 @@
 #include "game/Scenes/SceneManager.h"
 
 class SettingScene : public Scene {
+ private:
+  bool mode{false};
  public:
   SettingScene(Context* const context, SceneManager* sceneManager);
   void update(SceneManager* sceneManager) override;

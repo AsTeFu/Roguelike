@@ -3,6 +3,8 @@
 //
 #include "game/Scenes/SettingScene.h"
 #include <BearLibTerminal.h>
+#include <game/Scenes/SceneRenderUtility.h>
+#include <game/Utility/DTO/RenderModeDTO.h>
 #include <utilities/Terminal.h>
 #include <string>
 #include "game/Scenes/MenuScene.h"
@@ -10,23 +12,33 @@
 #include "game/Utility/Input.h"
 
 void SettingScene::update(SceneManager* sceneManager) {
-  if (Input::getKey(KeyCode::Enter) || Input::getKey(KeyCode::Escape)) {
+  if (Input::getKeyDown(KeyCode::Escape)) {
     Terminal::clearArea({}, Config::getInstance().sizeTerminal);
+    sceneManager->getContext()->getObject<RenderModeDTO>()->mode = mode;
     sceneManager->switchScene(menuScene);
   }
+  if (Input::getKeyDown(KeyCode::Enter)) {
+    mode = !mode;
+  }
 }
-void SettingScene::start(SceneManager* sceneManager) {}
+void SettingScene::start(SceneManager* sceneManager) {
+  sceneManager->getContext()->addObject<RenderModeDTO>(false);
+}
 void SettingScene::render() {
-  Terminal::setLayer(3);
   Terminal::setColor(Color::White);
 
-  Vector2 size(Config::getInstance().sizeTerminal.getX() - 20, 3);
+  Vector2 size(Config::getInstance().sizeTerminal.getX() - 20, 4);
   Vector2 position(10, 3);
-  // drawHeader(positionShop, sizeShop, "Setting");
+  SceneRenderUtility::drawHeader(position, size, "Setting");
 
-  std::string message1 = "Напиши, чтобы ты хотел здесь настроить в гугл форму";
-  std::string message2 = "Back (Enter or Escape)";
-  Terminal::print(position.getX() + size.getX() / 2 - message1.size() / 4 + 1, position.getY() + 4, message1);
-  Terminal::print(position.getX() + size.getX() / 2 - message2.size(), position.getY() + 5, message2);
+  int x = position.getX() + 5;
+  int y = position.getY() + size.getY() + 3;
+
+  if (mode)
+    Terminal::printf(x, y, "Mode of graphic [[X]]");
+  else
+    Terminal::printf(x, y, "Mode of graphic [[ ]]");
 }
-SettingScene::SettingScene(Context* const context, SceneManager* sceneManager) : Scene(context, sceneManager) {}
+SettingScene::SettingScene(Context* const context, SceneManager* sceneManager) : Scene(context, sceneManager) {
+  sceneManager->getContext()->addObject<RenderModeDTO>(mode);
+}

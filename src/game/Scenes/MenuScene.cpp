@@ -15,12 +15,12 @@ MenuScene::MenuScene(Context* context, SceneManager* sceneManager) : Scene(conte
   // _menuElements.insert(make_pair("Continue", bind(&MenuScene::continueGame, this, _1)));
   _menuElements.insert(make_pair("Editor", bind(&MenuScene::editor, this, _1)));
   _menuElements.insert(make_pair("Viewer", bind(&MenuScene::viewer, this, _1)));
-  // _menuElements.insert(make_pair("Setting", bind(&MenuScene::setting, this, _1)));
+  _menuElements.insert(make_pair("Setting", bind(&MenuScene::setting, this, _1)));
   _menuElements.insert(make_pair("Exit", bind(&MenuScene::exit, this, _1)));
 
   // TODO(AsTeFu): я не придумал, как объединить мапу и вектор, так чтобы сохранился порядок в векторе.
   // Не могу создать мапу на основе вектора, а вектор на основе мапы теряет порядок
-  _namesMenuElements = {"Start", "Editor", "Viewer", "Exit"};
+  _namesMenuElements = {"Start", "Editor", "Viewer", "Setting", "Exit"};
 }
 void MenuScene::start(SceneManager* sceneManager) {
   position = {Config::getInstance().sizeTerminal.getX() / 2 - 10, Config::getInstance().sizeTerminal.getY() / 2 - 5};

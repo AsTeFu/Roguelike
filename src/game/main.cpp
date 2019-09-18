@@ -1,3 +1,4 @@
+#include <BearLibTerminal.h>
 #include <editor/EditorScene.h>
 #include <game/Scenes/AbilityScene.h>
 #include <game/Scenes/BackpackScene.h>
@@ -9,6 +10,7 @@
 #include <game/Scenes/SettingScene.h>
 #include <game/Scenes/ShopScene.h>
 #include <game/Scenes/SpecialScene.h>
+#include <game/Utility/DTO/RenderModeDTO.h>
 #include <game/Utility/Input.h>
 #include <roomviewer/RoomViewerScene.h>
 #include <ctime>
@@ -30,10 +32,10 @@ int main() {
   // terminal_set("input.filter = [keyboard+, mouse+]");
   // terminal_set("input.mouse-cursor = false");
 
-  // terminal_set("0x40: Resource/Sprites/player.png, _size=32x32, align=center");
-  // terminal_set("0x23: Resource/Sprites/wall.png, _size=32x32, align=center");
-  // terminal_set("0x2E: Resource/Sprites/dot.png, _size=32x32, align=center");
-  // terminal_set("0x45: Resource/Sprites/Enemy.png, _size=32x32, align=center");
+  // terminal_set("0x40: Resource\\Sprites\\player.png, align=top-left");
+  // terminal_set("0x23: Resource\\Sprites\\wall.png");
+  // terminal_set("0x2E: Resource\\Sprites\\dot.png");
+  // terminal_set("0x45: Resource\\Sprites\\Enemy.png, align=top-left");
 
   Terminal::refresh();
 

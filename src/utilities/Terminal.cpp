@@ -19,10 +19,10 @@ void Terminal::clearArea(int x, int y, int w, int h) {
 void Terminal::setLayer(int layer) {
   terminal_layer(layer);
 }
-void Terminal::put(int x, int y, char symbol) {
+void Terminal::put(int x, int y, int symbol) {
   terminal_put(x, y, symbol);
 }
-void Terminal::put(const Vector2& position, char symbol) {
+void Terminal::put(const Vector2& position, int symbol) {
   put(position.getX(), position.getY(), symbol);
 }
 void Terminal::print(const Vector2& position, const std::string& str) {

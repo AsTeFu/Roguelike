@@ -20,7 +20,7 @@ int norm(int num) {
   return -1;
 }
 
-void CameraSystem::postUpdate(Entity* entity) {
+void CameraSystem::update(Entity* entity) {
   auto camera = entity->getComponent<CameraComponent>();
   auto transform = entity->getComponent<Transform>();
   auto target = getEntityManager()->getByTag("player")[0]->getComponent<Transform>();

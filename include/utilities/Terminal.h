@@ -23,8 +23,8 @@ class Terminal {
   static void crop(int x, int y, int w, int h);
   static void crop(const Vector2& position, const Vector2& size);
   static void setLayer(int layer);
-  static void put(int x, int y, char symbol);
-  static void put(const Vector2& position, char symbol);
+  static void put(int x, int y, int symbol);
+  static void put(const Vector2& position, int symbol);
   static void put(const Vector2& position, const Tile& tile);
   static void put(int x, int y, const Tile& tile);
   static void print(int x, int y, const std::string& str);

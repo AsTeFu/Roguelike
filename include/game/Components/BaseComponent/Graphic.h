@@ -5,18 +5,19 @@
 #ifndef INCLUDE_GAME_COMPONENTS_BASECOMPONENT_GRAPHIC_H_
 #define INCLUDE_GAME_COMPONENTS_BASECOMPONENT_GRAPHIC_H_
 
-#include "utilities/Vector2.h"
 #include "ecs/IComponent.h"
 #include "game/Utility/Display.h"
+#include "utilities/Vector2.h"
 
 class Graphic : public IComponent {
  public:
   Display display;
   Vector2 offset;
-  bool visible;
-  Vector2 renderPos{};
-  explicit Graphic(const Display& display) : display(display), visible(false) {}
-  Graphic(char graphic, Color color) : display(graphic, color), visible(false) {}
+  int layer{0};
+
+  explicit Graphic(const Display& display) : display(display) {}
+  Graphic(char graphic, Color color) : display(graphic, color) {}
+  Graphic(char graphic, Color color, int layer) : display(graphic, color), layer(layer) {}
 };
 
 #endif  // INCLUDE_GAME_COMPONENTS_BASECOMPONENT_GRAPHIC_H_

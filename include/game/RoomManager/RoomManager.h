@@ -48,6 +48,8 @@ class RoomManager {
   // void addSpecial(const SpecialDTO& special);
   // void addName(const std::string& name);
   Entity* getCurrentPlayer() const;
+  size_t getRenderMode();
+  void setRenderMode(int renderMode);
 };
 
 #endif  // INCLUDE_GAME_ROOMMANAGER_ROOMMANAGER_H_

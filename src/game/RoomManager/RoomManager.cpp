@@ -3,6 +3,7 @@
 //
 
 #include "game/RoomManager/RoomManager.h"
+#include <game/Components/RenderType.h>
 #include <game/ECSUtility.h>
 #include <game/Scenes/BackpackScene.h>
 #include <game/Utility/DTO/SpecialDTO.h>
@@ -58,9 +59,9 @@ void RoomManager::nextRoom() {
     _currentRoom = _rooms[++_currentID].get();
     ECSUtility::transferPlayer(oldPlayer, getCurrentPlayer());
   }
-
   std::cout << "Current room: " << _currentID << std::endl;
 }
+
 void RoomManager::previousRoom() {
   if (_currentID > 1) {
     auto oldPlayer = getCurrentPlayer();

@@ -3,6 +3,7 @@
 //
 
 #include "game/Windows/GameWindowsManager.h"
+#include <BearLibTerminal.h>
 #include <game/Utility/Config.h>
 
 void GameWindowsManager::update(RoomManager *roomManager) const {

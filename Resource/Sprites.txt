@@ -1,0 +1,12 @@
+@:player2.png
+#:wall2.png
+.:dot2.png
+E:Enemy2.png
+*:Food2.png
++:Health2.png
+$:Coin.png
+<:Exit2.png
+>:Exit2.png
+X:Chest.png
+M:Shop.png
+&:Dead.png

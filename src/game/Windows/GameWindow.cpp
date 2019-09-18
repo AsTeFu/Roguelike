@@ -8,6 +8,10 @@
 
 void GameWindow::render(RoomManager* roomManager) const {
   configurateTerminal();
+  for (int i = 0; i < 6; ++i) {
+    Terminal::setLayer(i);
+    Terminal::clearArea(_config.position, _config.size);
+  }
   roomManager->update();
 
   Terminal::setColor(_config.color);
@@ -17,8 +21,10 @@ void GameWindow::render(RoomManager* roomManager) const {
   Terminal::print(_config.position.getX() + 5, _config.position.getY(), _config.name);
 }
 GameWindow::GameWindow(const WindowConfig& config) : BaseGameWindow(config) {
-  Terminal::setLayer(_config.layer);
-  Terminal::crop(_config.position, _config.size);
+  for (int i = 0; i < 6; ++i) {
+    Terminal::setLayer(i);
+    Terminal::crop(_config.position, _config.size);
+  }
 
   std::cout << "GameWindow (layer: " << _config.layer << "); Position: " << _config.position << "; Size "
             << _config.size << std::endl;

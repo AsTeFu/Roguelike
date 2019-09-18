@@ -9,7 +9,7 @@
 
 class CameraSystem : public ISystem {
  protected:
-  void postUpdate(Entity *entity) override;
+  void update(Entity *entity) override;
 
  public:
   CameraSystem(EntityManager *const entityManager, SystemManager *const systemManager, SceneManager *const sceneManager)

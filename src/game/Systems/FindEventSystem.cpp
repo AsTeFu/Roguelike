@@ -5,6 +5,7 @@
 #include "game/Systems/FindEventSystem.h"
 #include <game/Components/AIController.h>
 #include <game/Components/BaseComponent/Graphic.h>
+#include <game/Components/BaseComponent/Lighting.h>
 #include <game/Components/BaseComponent/VisibleComponent.h>
 #include <game/Components/EnvironmentComponents/ChestComponent.h>
 #include <game/Components/EnvironmentComponents/ShopComponent.h>
@@ -17,7 +18,7 @@ bool FindEventSystem::filter(Entity* entity) const {
   return entity->hasComponent<Graphic>() && entity->hasComponent<VisibleComponent>();
 }
 void FindEventSystem::postUpdate(Entity* entity) {
-  if (!entity->getComponent<VisibleComponent>()->visible && entity->getComponent<Graphic>()->visible) {
+  if (!entity->getComponent<VisibleComponent>()->visible && entity->getComponent<Lighting>()->visible) {
     if (entity->hasComponent<AIController>())
       spottedEnemy(entity);
     else if (entity->hasComponent<ChestComponent>())
